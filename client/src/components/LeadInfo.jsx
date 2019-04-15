@@ -75,13 +75,13 @@ const Practice = ({currentLead, contactView, contactPurchase, handleComment, com
                 <div className="contact-info">
                   {showNotes ? 
                   <form onSubmit={() => { handleComment(event) }}>
-                      <Input placeholder="Add new comment..." fullWidth={true} requiredThis contact has been uploaded={true}
+                    <Input placeholder="Add new comment..." fullWidth={true} required={true}
                       onChange={(event) => { commentBody(event.target.value) }} value={commentBodyText} />
                     <div>
                       <Input type="submit" value="Submit" />
                     </div>
                   </form>
-                  : "This contact has been uploaded! Your uploaded information is currently being verified."
+                    : "This contact has been uploaded! Your uploaded information is currently being verified."
                 
               
               }
