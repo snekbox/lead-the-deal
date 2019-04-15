@@ -45,11 +45,33 @@ const styles = theme => ({
   },
 });
 
-function Register(props) {
-  const { classes } = props;
+class Register extends React.Component {
+  constructor(props){
+    super(props)
 
-  return (
-    <main className={classes.main}>
+    this.state = {
+      name: '',
+      username: '',
+      password: '',
+      email: '',
+      company: ''
+    }
+
+  }
+
+
+
+  handleSubmit(){
+
+  }
+
+
+  render(){
+
+    const {classes} = this.props;
+
+    return (
+      <main className={classes.main}>
       <CssBaseline />
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -82,29 +104,32 @@ function Register(props) {
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+            />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-          >
+            className={this.props.classes.submit}
+            >
        Register
           </Button>
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-          >
-      Login
+            
+            >
+               Login
           </Button>
         </form>
       </Paper>
     </main>
-  );
+    );
+  }
 }
 
 Register.propTypes = {

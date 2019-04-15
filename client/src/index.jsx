@@ -25,8 +25,8 @@ componentDidMount(){
       <div>
         {/* <DashboardHeader/>
         <DashBody/> */}
-        <SignIn/>
-        {/* <Register/> */}
+       {/*  <SignIn/>*/}
+        <Register/> 
       </div>
     )
   }
