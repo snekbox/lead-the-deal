@@ -149,12 +149,18 @@ const Practice = ({currentLead, contactView, contactPurchase, handleComment, com
           </div>
                 <CardActions>
           <div id={currentLead.id}>
-
+          {purchaseState === 'Purchase This Contact' ? 
           <Button size="small" variant="contained" color="primary" onClick={()=>contactPurchase(event, currentLead.id)}>
            <span style={{color: purchaseColor}}>
             {purchaseState}
             </span>
           </Button>
+          : <Button size="small" variant="contained" color="primary">
+           <span style={{color: purchaseColor}}>
+            {purchaseState}
+            </span>
+          </Button>
+          }
                   </div>
                 </CardActions>
               </CardContent>
