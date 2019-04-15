@@ -8,12 +8,19 @@ const username = process.env.username || "root";
 const password = process.env.password || "";
 const host = process.env.host|| "localhost";
 const port = process.env.port || '3000'
+const dbName = process.env.dbName || 'lead_the_deal'
 
-const sequelize = new Sequelize('lead_the_deal', username, password, {
-  dialect: 'mysql',
-  host: host,
+// const sequelize = new Sequelize('lead_the_deal', username, password, {
+//   dialect: 'mysql',
+//   host: host,
+// });
+
+
+const sequelize = new Sequelize('lead_the_deal', 'leadthedeal', process.env.AWSPASS, {
+  host: 'leadthedeal.co5uhag2jtpo.us-east-2.rds.amazonaws.com',
+  port: 3306,
+  dialect: 'mysql'
 });
-
 
 ///////////////////
 /////MODELS ///////
@@ -88,6 +95,7 @@ const Contact = sequelize.define('contact', {
   phone: Sequelize.STRING,
   email: Sequelize.STRING,
   Address: Sequelize.STRING,
+  verified: Sequelize.BOOLEAN,
   times_purchased: {
     type: Sequelize.INTEGER,
     defaultValue: 0
@@ -119,6 +127,25 @@ const Purchase = sequelize.define('purchase', {
   }
 })
 
+const Comment = sequelize.define('comment', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  user_id: Sequelize.INTEGER,
+  contact_id: Sequelize.INTEGER,
+  comment: Sequelize.STRING,
+  createdAt: {
+    type: Sequelize.DATE,
+    defaultValue: sequelize.fn('NOW')
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    defaultValue: sequelize.fn('NOW')
+  }
+})
 
 //////////////////////
 /////RELATIONSHIPS////
@@ -130,23 +157,20 @@ User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: 
 Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: false}, foreignKey: 'contact_id'});
 
 
+
+
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
 
 
 const purchasedContacts = function (callback, id) {
-  if (id === 'userId') {
-    id = 1
-  }
   Purchase.findAll({
     where: {
       user_id: id
     }
   })
-    .then((contacts) => {
-      const purchasedArr = contacts.map((contact)=> contact.contact_id)
-      
+    .then((contacts) => {    
       return contacts.map((contact) => contact.contact_id)
     })
       .then((contactIds)=>{
@@ -174,4 +198,5 @@ module.exports.User = User;
 module.exports.Contact = Contact;
 module.exports.Purchase = Purchase;
 module.exports.purchasedContacts = purchasedContacts
+module.exports.Comment = Comment
 

@@ -30,12 +30,12 @@ exports.signin = async function(req, res, next) {
       });
     } else{
       return next({
-        status: 400,
+        status: 401,
         message: 'Invalid username/password'
       })
     }
   } catch(err){
-    return next({status: 400, message: 'Invalid username/password'});
+    return next({status: 401, message: 'Invalid username/password'});
   }
 
 

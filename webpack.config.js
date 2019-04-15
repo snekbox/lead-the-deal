@@ -20,6 +20,28 @@ module.exports = {
         exclude: /node_modules/,
         use: ['babel-loader'],
       },
-    ],
+      {
+        test: /\.(png|jpg|gif)$/i,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              fallback: 'responsive-loader'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {},
+          },
+        ],
+      },
+    ]
   },
 };

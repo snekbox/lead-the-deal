@@ -8,20 +8,19 @@ import Paper from '@material-ui/core/Paper';
 
 
 const SearchView = ({searchedContacts, selectedView, selectContact}) => {
-  console.log(selectedView)
-  if (selectedView === 'searched'){
+  if (selectedView === 'searched' && searchedContacts){
     if (searchedContacts.length > 0){
       return (
         <div>
-          <h3>Search Results</h3>
+          <h4 id="contact-list">Search Results: </h4>
           <div className="lead-header lead-row">
-            Name, Company
+            <span id="contact-list">Name, Company </span>
               </div>
           {searchedContacts.map((contact) => {
             return (
               <div key={contact.id}>
                 <Button size="small" onClick={() => { selectContact(contact.id, 'searched', 'limited') }}>
-                  {contact.name}, {contact.company}
+                  <span id="contact-list">{contact.name}, {contact.company} </span>
                 </Button>
               </div>
             )

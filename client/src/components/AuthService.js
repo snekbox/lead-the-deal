@@ -2,7 +2,7 @@ import decode from 'jwt-decode';
 export default class AuthService {
   // Initializing important variables
   constructor(domain) {
-    this.domain = domain || 'http://localhost:3000' // API server domain
+    this.domain = domain || `http://localhost:3000` // API server domain
     this.fetch = this.fetch.bind(this) 
     this.login = this.login.bind(this)
     this.getProfile = this.getProfile.bind(this)
@@ -10,7 +10,7 @@ export default class AuthService {
 
   login(username, password) {
     // Get a token from api server using the fetch api
-    return this.fetch(`${this.domain}/api/auth/signin`, {
+    return this.fetch(`/api/auth/signin`, { //`${this.domain}/api/auth/signin`
       method: 'POST',
       body: JSON.stringify({
         username,
@@ -83,6 +83,29 @@ export default class AuthService {
       .then(this._checkStatus)
       .then(response => response.json())
   }
+
+  fetch2(url, options) {
+    // performs api calls sending the required authentication headers
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+
+    // Setting Authorization header
+    // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
+    if (this.loggedIn()) {
+      headers['Authorization'] = 'Bearer ' + this.getToken()
+    }
+
+    return fetch(url, {
+      headers,
+      ...options
+    })
+      // .then(this._checkStatus)
+       .then(response => response)
+  }
+
+
 
   _checkStatus(response) {
     // raises an error in case response status is not a success

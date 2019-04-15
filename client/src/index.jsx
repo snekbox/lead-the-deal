@@ -8,45 +8,73 @@ import Register from './components/Register.jsx';
 import {BrowserRouter as Router, Route, Link, Switch, Redirect} from 'react-router-dom'
 import Axios from 'axios';
 import AuthService from './components/AuthService.js';
+import UserHeader from './components/UserHeader.jsx';
+
+
+//Material UI stuff
+
+
+const styles = {
+  paperContainer: {
+    backgroundImage: `url(${Image})`
+  }
+};
+
 
 class App extends React.Component {
-
 
   constructor(props){
     super(props)
     this.state = {
       isLoggedin: false,
       userId: null,
-      redirectTo: ''
+      redirectTo: '',
+      username: '',
+      points: null
     }
-
     this.registerUser = this.registerUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
     this.logOutUser = this.logOutUser.bind(this);
+    this.getUserPoints = this.getUserPoints.bind(this);
     this.Auth = new AuthService();
+    this.showModal = this.showModal.bind(this);
   }
 
 
 
 componentWillMount() {
-    if (this.Auth.loggedIn()){
-      this.setState({
-        isLoggedin: true,
-        redirectTo: '/dashboard'
-      })
-    } else{
-      this.setState({
-        isLoggedin: false
-      })
-    }
+  //   if (this.Auth.loggedIn()){
+  //     this.setState({
+  //       isLoggedin: true,
+  //       redirectTo: '/dashboard'
+  //     })
+  //   } else{
+  //     this.setState({
+  //       isLoggedin: false
+  //     })
+  //   }
   }
 
-componentDidMount(){
-  
-this.setState({
-  isLoggedin: false
-})
+showModal(){
+  console.log('modal');
 }
+
+
+getUserPoints(){
+
+
+  this.Auth.fetch(`/api/users/${this.state.userId}`)
+    .then((user) => {
+      this.setState({
+        points: user.points
+      })
+    })
+    .catch((err) =>{
+      console.error(err);
+    })
+
+}
+
 
 registerUser(user){
 
@@ -73,11 +101,12 @@ loginUser(username, password){
       console.log(res);
       this.setState({
         isLoggedin: true,
-        userId: res.id
+        userId: res.id,
+        username: res.username
       })
-      console.log(this.props);
+
     }).catch((err) => {
-      alert(err.message);
+      alert('The username and password you entered did not match our records. Please double-check and try again.');
     });
 }
 
@@ -95,20 +124,33 @@ logOutUser(){
     return(
       <Router>
   
-        <DashboardHeader isLoggedin={this.state.isLoggedin} logOutUser={this.logOutUser}/>
 
         {this.state.isLoggedin ? 
-        <DashBody /> : null
-        }
-
-          <Route exact path ='/dashboard' component={DashBody} />
-
+        <div>
+          <UserHeader logOutUser={this.logOutUser} userId={this.state.userId} points={this.state.points} username={this.state.username}/>
+          <DashBody auth={this.Auth} 
+          userId={this.state.userId} 
+          username={this.state.username}
+          updatePoints={this.updatePoints} 
+          getUserPoints={this.getUserPoints}
+          points={this.state.points}/> 
+          <Route exact path='/dashboard' />
+        </div>
+        : 
+        <div className='intro-body' >
+       
+       
+        <DashboardHeader isLoggedin={this.state.isLoggedin} logOutUser={this.logOutUser}/>
           <Route path='/register'
-           render={(routeProps) => (<Register {...routeProps} registerUser={this.registerUser}/>)}
+            render={(routeProps) => (<Register {...routeProps} registerUser={this.registerUser} />)}
             />
           <Route path='/login'
-           render={(routeProps) => (<Login {...routeProps} Auth={this.Auth} isLoggedin={this.state.isLoggedin} loginUser={this.loginUser}/>)}
+            render={(routeProps) => (<Login {...routeProps} Auth={this.Auth} isLoggedin={this.state.isLoggedin} loginUser={this.loginUser} />)}
             />
+        </div>
+        }
+
+        
     
       </Router>
     )
