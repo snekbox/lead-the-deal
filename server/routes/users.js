@@ -4,7 +4,7 @@ const db = require('../../database/index.js')
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const axios = require('axios');
-
+const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
 
 
 

@@ -5,6 +5,9 @@
   border: 1px solid black;
   border-radius: 8px;
   box-shadow: 4px 4px 4px grey;
+  height: 300px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 
