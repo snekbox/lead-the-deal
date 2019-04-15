@@ -45,7 +45,7 @@ app.use('/api/users', usersRoute)
 
 /////INDIVIDUAL USER INFO/////////////
 
-app.get('/api/users/:id', (req, res) => {
+app.get('/api/users/:id', loginRequired, ensureCorrectUser, (req, res) => {
   db.User.findOne({ where: { id: req.params.id } })
     .then((result) => {
       res.send(result);
