@@ -81,7 +81,7 @@ const Practice = ({currentLead, contactView, contactPurchase, handleComment, com
                       <Input type="submit" value="Submit" />
                     </div>
                   </form>
-                  : "This contact has been uploaded!"
+                  : "This contact has been uploaded! Your uploaded information is being verified."
                 
               
               }
