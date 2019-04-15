@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Axios from 'axios';
 
 const styles = theme => ({
   main: {
@@ -57,12 +58,14 @@ class Register extends React.Component {
       company: ''
     }
 
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
 
 
   handleSubmit(){
-
+    this.props.history.push('/login')
+    this.props.registerUser(this.state)
   }
 
 
@@ -80,27 +83,33 @@ class Register extends React.Component {
         <Typography component="h1" variant="h5">
           Lead The Deal
         </Typography>
+
         <form className={classes.form}>
         <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="name">Name</InputLabel>
-            <Input id="name" name="name" autoComplete="name" autoFocus />
+            <InputLabel  htmlFor="name">Name</InputLabel>
+              <Input onChange={() => this.setState({ name: event.target.value })} id="name" name="name" autoComplete="name" autoFocus />
           </FormControl>
+
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="username">Username</InputLabel>
-            <Input id="username" name="username" autoComplete="username" autoFocus />
+              <Input onChange={() => this.setState({ username: event.target.value })} id="username" name="username" autoComplete="username" autoFocus />
           </FormControl>
+
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
+              <Input onChange={() => this.setState({ password: event.target.value })} name="password" type="password" id="password" autoComplete="current-password" />
           </FormControl> 
+
            <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus />
+              <Input onChange={() => this.setState({ email: event.target.value })} id="email" name="email" autoComplete="email" autoFocus />
           </FormControl>
+
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="company">Company</InputLabel>
-            <Input id="company" name="company" autoComplete="company" autoFocus />
+              <Input onChange={() => this.setState({ company: event.target.value })} id="company" name="company" autoComplete="company" autoFocus />
           </FormControl>
+
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
@@ -111,11 +120,12 @@ class Register extends React.Component {
             variant="contained"
             color="primary"
             className={this.props.classes.submit}
+            onClick = {this.handleSubmit}
             >
        Register
           </Button>
 
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -124,7 +134,7 @@ class Register extends React.Component {
             
             >
                Login
-          </Button>
+          </Button> */}
         </form>
       </Paper>
     </main>

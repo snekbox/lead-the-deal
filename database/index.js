@@ -1,13 +1,25 @@
-const Sequelize = require('sequelize');
+
 // const {username, password, host} = require('../config')
 require('dotenv').config();
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op
+const bcrypt    = require('bcrypt');
 const username = process.env.username || "root";
-const password = process.env.password;
-const host = process.env.host;
+const password = process.env.password || "";
+const host = process.env.host|| "localhost";
+const port = process.env.port || '3000'
+const dbName = process.env.dbName || 'lead_the_deal'
 
-const sequelize = new Sequelize('lead_the_deal', username, password, {
-  dialect: 'mysql',
-  host: host,
+// const sequelize = new Sequelize('lead_the_deal', username, password, {
+//   dialect: 'mysql',
+//   host: host,
+// });
+
+
+const sequelize = new Sequelize('lead_the_deal', 'leadthedeal', process.env.AWSPASS, {
+  host: 'leadthedeal.co5uhag2jtpo.us-east-2.rds.amazonaws.com',
+  port: 3306,
+  dialect: 'mysql'
 });
 
 ///////////////////
@@ -23,7 +35,10 @@ const User = sequelize.define('user', {
     allowNull: false,
     primaryKey: true
   },
-  username: Sequelize.STRING,
+  username: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   name: Sequelize.STRING,
   company: Sequelize.STRING,
   email: Sequelize.STRING,
@@ -38,15 +53,33 @@ const User = sequelize.define('user', {
   updatedAt: {
     type: Sequelize.DATE,
     defaultValue: sequelize.fn('NOW')
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  last_login: Sequelize.DATE,
+  status: {
+    type: Sequelize.ENUM('active', 'inactive'),
+    defaultValue: 'active'
   }
+}, {
+    hooks: {
+      beforeCreate: (user) => {
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(user.password, salt);
+      }
+    }
 })
 
 
-//TODO: Add uploaded by as foreign key from user parent key
+User.prototype.isValidPassword = function(password){
+  const isValid = bcrypt.compare(password, this.password)
+  return isValid
+}
+
 //TODO: veryify isEmail true, maybe is Phone number true (sequelize docs)
 
-
-//name, position, company, phone, email, address
 
 const Contact = sequelize.define('contact', {
   id: {
@@ -62,6 +95,7 @@ const Contact = sequelize.define('contact', {
   phone: Sequelize.STRING,
   email: Sequelize.STRING,
   Address: Sequelize.STRING,
+  verified: Sequelize.BOOLEAN,
   times_purchased: {
     type: Sequelize.INTEGER,
     defaultValue: 0
@@ -93,6 +127,30 @@ const Purchase = sequelize.define('purchase', {
   }
 })
 
+const Comment = sequelize.define('comment', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  user_id: Sequelize.INTEGER,
+  contact_id: Sequelize.INTEGER,
+  comment: Sequelize.STRING,
+  createdAt: {
+    type: Sequelize.DATE,
+    defaultValue: sequelize.fn('NOW')
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    defaultValue: sequelize.fn('NOW')
+  }
+})
+
+//////////////////////
+/////RELATIONSHIPS////
+//////////////////////
+
 User.hasMany(Contact, {as: 'Uploads'});
 Contact.belongsTo(User);
 User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: false}, foreignKey: 'user_id'});
@@ -100,22 +158,19 @@ Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: fal
 
 
 
-const uploadedContacts = function(callback, id){
-}
+
+///////////////////////////////////////////
+/////////////HELPER FUNCTIONS//////////////
+//////////////////////////////////////////
 
 
 const purchasedContacts = function (callback, id) {
-  if (id === 'userId') {
-    id = 1
-  }
   Purchase.findAll({
     where: {
       user_id: id
     }
   })
-    .then((contacts) => {
-      const purchasedArr = contacts.map((contact)=> contact.contact_id)
-      
+    .then((contacts) => {    
       return contacts.map((contact) => contact.contact_id)
     })
       .then((contactIds)=>{
@@ -134,18 +189,14 @@ const purchasedContacts = function (callback, id) {
 }
 
 
-
-
-
-
-
-
-
-
+////////////////////
+///// EXPORTS //////
+////////////////////
 
 module.exports.sequelize = sequelize;
 module.exports.User = User;
 module.exports.Contact = Contact;
 module.exports.Purchase = Purchase;
-module.exports.uploadedContacts = uploadedContacts;
 module.exports.purchasedContacts = purchasedContacts
+module.exports.Comment = Comment
+

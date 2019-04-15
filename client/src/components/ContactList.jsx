@@ -6,80 +6,73 @@ import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
 
+import FormView from './FormView.jsx'
 
-const ContactList = ({uploaded, purchased, selectedView, selectContact, searchContact}) => {
-  if (selectedView === 'uploaded'){
-    return (
-      <div>
-        {/* <Paper> */}
-        <div className="lead-header lead-row">
-          Name, Company
-        </div>
-        {uploaded.map((contact) => {
-          return (
-            <div key={contact.id}>
-            <Button size="small" onClick={() => { selectContact(contact.id, 'uploaded') }}>
-              {contact.name}, {contact.company}
-            </Button>
-            </div>
-          )
-        })}
-        {/* </Paper> */}
-      </div>
-    )
-  }
-  else if (selectedView === 'purchased'){
-    return (
-      <div>
-        {/* <Paper> */}
-          <div className="lead-header lead-row">
+
+const ContactList = ({uploaded, purchased, selectedView, selectContact, searchContact, uploadContact}) => {
+  if (selectedView === 'uploaded' && uploaded){
+    if (uploaded.length > 0){
+      return (
+        <div>
+          {/* <Paper> */}
+          <div className="lead-header lead-row, dashboard">
             Name, Company
-        </div>
-          {purchased.map((contact) => {
+          </div>
+          {uploaded.map((contact) => {
             return (
               <div key={contact.id}>
-              <Button size="small" onClick={() => { selectContact(contact.id, 'purchased')}}>
-                {contact.name}, {contact.company}
+              <Button size="small" onClick={() => { selectContact(contact.id, 'uploaded', 'access') }}>
+                  <span id="contact-list">{contact.name}, {contact.company} </span>
               </Button>
               </div>
             )
           })}
-        {/* </Paper> */}
-      </div>
-    )
+          {/* </Paper> */}
+        </div>
+      )
+    }
+    else {
+      return (
+        <div>You have not uploaded any contacts!</div>
+      )
+    }
+  }
+  else if (selectedView === 'purchased' && purchased){
+    if (purchased.length >0){
+      return (
+        <div>
+          {/* <Paper> */}
+            <div className="lead-header lead-row, dashboard">
+            <h4> Name, Company </h4> 
+          </div>
+          
+            {purchased.map((contact) => {
+              return (
+                <div key={contact.id}>
+                <Button size="small" onClick={() => { selectContact(contact.id, 'purchased', 'access')}}>
+                    <span id="contact-list">{contact.name}, {contact.company} </span>
+                </Button>
+                </div>
+              )
+            })}
+          {/* </Paper> */}
+        </div>
+      )
+    }
+    else {
+      return (
+        <div>You have not Purchased any contacts!</div>
+      )
+    }
   }
   else if (selectedView === 'upload') {
     return (
-      <div>
-        <form onSubmit={() => { searchContact(event) }}>
-          <Input placeholder="First & Last Name" fullWidth={true} required={true}></Input>
-          <Input placeholder="Company" fullWidth={true} required={true}></Input>
-          <Input placeholder="Industry" fullWidth={true} required={true}></Input>
-          <Input placeholder="Poisition" fullWidth={true} required={true}></Input>
-          <Input placeholder="Phone Number" fullWidth={true} required={true}></Input>
-          <Input placeholder="Email" fullWidth={true} required={true}></Input>
-          <Input placeholder="Address" fullWidth={true} required={true}></Input>
-          <div>
-            <Input type="submit" value="Upload"/>
-          </div>
-        </form>
-      </div>
+        <FormView selectedView={selectedView} uploadContact={uploadContact}/>
     )
   }
   else if (selectedView === 'search'){
     return (
-      <div>
-        <form onSubmit={()=>{searchContact(event)}}>
-          <Input placeholder="Name" fullWidth={true}></Input>
-          <Input placeholder="Company" fullWidth={true}></Input>
-          <Input placeholder="Industry" fullWidth={true}></Input>
-          <Input placeholder="Position" fullWidth={true}></Input>
-          <Input placeholder="Address" fullWidth={true}></Input>
-        <div>
-            <Input type="submit" value="Search" onChange={searchContact(event)}/>
-        </div>
-        </form>
-      </div>
+      <FormView selectedView='search' searchContact={searchContact}/>
     )
   }
   else{

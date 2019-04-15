@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
+import AuthService from './AuthService'
+import { withRouter } from 'react-router'
+
 
 const styles = theme => ({
   main: {
@@ -45,8 +48,35 @@ const styles = theme => ({
   },
 });
 
-function SignIn(props) {
-  const { classes } = props;
+class Login extends React.Component{
+
+  constructor(props){
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+
+  }
+
+
+  
+
+  handleClick(e){
+
+    e.preventDefault();
+
+    this.props.loginUser(this.state.username, this.state.password);
+    
+    // if (this.props.isLoggedin){
+    //   this.props.history.push('/dashboard')
+    // } else{
+    //   this.props.history.push('/login')
+    // }
+  } 
+
+
+  render(){
+
+  const { classes } = this.props;
 
   return (
     <main className={classes.main}>
@@ -61,11 +91,11 @@ function SignIn(props) {
         <form className={classes.form}>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="username">Username</InputLabel>
-            <Input id="username" name="username" autoComplete="username" autoFocus />
+            <Input onChange={()=> this.setState({username: event.target.value})} id="username" name="username" autoComplete="username" autoFocus />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
+            <Input onChange={()=> this.setState({password: event.target.value})} name="password" type="password" id="password" autoComplete="current-password" />
           </FormControl>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -77,10 +107,11 @@ function SignIn(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={this.handleClick}
           >
             Login
           </Button>
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -88,15 +119,16 @@ function SignIn(props) {
             className={classes.submit}
           >
            Register
-          </Button>
+          </Button> */}
         </form>
       </Paper>
     </main>
   );
 }
+}
 
-SignIn.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+// Login.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 
-export default withStyles(styles)(SignIn);
+export default withRouter( withStyles(styles)(Login));
