@@ -8,8 +8,7 @@ const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
 
 
 
-
-router.post('/:id/upload',(req,res)=>{
+router.post('/:id/upload', loginRequired, ensureCorrectUser, (req,res)=>{
   const userId = req.params.id
   const upload = req.body
   let phone = upload.phone.split([' ', '-']).join('').substring(0,10)
@@ -100,7 +99,7 @@ router.post('/:id/upload',(req,res)=>{
     })
 })
 
-router.get('/:id/uploaded_contacts', (req, res) => {
+router.get('/:id/uploaded_contacts', loginRequired, ensureCorrectUser, (req, res) => {
   db.User.findAll({ where: { id: req.params.id } })
     .then((result) => {
       result[0].getUploads()
@@ -114,7 +113,7 @@ router.get('/:id/uploaded_contacts', (req, res) => {
     });
 })
 
-router.get('/:id/purchased_contacts', (req, res) => {
+router.get('/:id/purchased_contacts', loginRequired, ensureCorrectUser, (req, res) => {
   let userId = req.params.id
   db.purchasedContacts(function (contacts) {
     res.send(contacts)
@@ -195,7 +194,7 @@ router.post('/search/:id', (req, res) => {
     })
 });
 
-router.post(`/purchase_contact/:id/:contactId`, (req, res) => {
+router.post(`/purchase_contact/:id/:contactId`, loginRequired, ensureCorrectUser, (req, res) => {
   const userId = req.params.id;
   const contactId = req.params.contactId
   db.Purchase.create({
@@ -258,7 +257,7 @@ router.get(`/comments/:id/:contactId`, (req,res)=>{
     })
 })
 
-router.post(`/comments/:id/:contactId`, (req, res) => {
+router.post(`/comments/:id/:contactId`, loginRequired, ensureCorrectUser, (req, res) => {
   const userId = req.params.id;
   const contactId = req.params.contactId
   return db.Comment.create({
