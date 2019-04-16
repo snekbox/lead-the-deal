@@ -7,17 +7,17 @@ const bcrypt    = require('bcrypt');
 const username = process.env.MASTER_USER || "root";
 const password = process.env.DB_PASSWORD || "";
 const host = process.env.HOST|| "localhost";
-const port = process.env.PORT || '3000'
-const dbName = process.env.DB_NAME || 'lead_the_deal'
+const port = process.env.DB_PORT || '3306'
+const dbName = process.env.DB_NAME || 'leadthedeal'
 
-const sequelize = new Sequelize(process.env.dbName, process.env.username, process.env.password, {
-  host: process.env.host,
-  port: process.env.port,
+const sequelize = new Sequelize(dbName, username, password, {
+  host: host,
+  port: port,
   dialect: 'mysql'
 });
 
 ///////////////////
-/////MODELS ///////
+/////MODELS ////////
 ///////////////////
 
 //TODO: add maybe short description field of who the person is? Upon Registration
