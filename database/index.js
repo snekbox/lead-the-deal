@@ -17,7 +17,7 @@ const sequelize = new Sequelize(dbName, username, password, {
 });
 
 ///////////////////
-/////MODELS ///////
+/////MODELS ////////
 ///////////////////
 
 //TODO: add maybe short description field of who the person is? Upon Registration
