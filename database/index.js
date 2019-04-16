@@ -4,17 +4,11 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 const bcrypt    = require('bcrypt');
-const username = process.env.username || "root";
-const password = process.env.password || "";
-const host = process.env.host|| "localhost";
-const port = process.env.port || '3000'
-const dbName = process.env.dbName || 'lead_the_deal'
-
-// const sequelize = new Sequelize('lead_the_deal', username, password, {
-//   dialect: 'mysql',
-//   host: host,
-// });
-
+const username = process.env.MASTER_USER || "root";
+const password = process.env.DB_PASSWORD || "";
+const host = process.env.HOST|| "localhost";
+const port = process.env.PORT || '3000'
+const dbName = process.env.DB_NAME || 'lead_the_deal'
 
 const sequelize = new Sequelize(process.env.dbName, process.env.username, process.env.password, {
   host: process.env.host,
