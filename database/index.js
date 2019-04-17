@@ -141,6 +141,28 @@ const Comment = sequelize.define('comment', {
   }
 })
 
+const Tags = sequelize.define('tags', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  tag_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  }, //for each tag, there needs to be a contact_id
+})
+
+const Tags_Purchases = sequelize.define('tags_purchases', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  }, 
+})
+
 //////////////////////
 /////RELATIONSHIPS////
 //////////////////////
@@ -150,8 +172,16 @@ Contact.belongsTo(User);
 User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: false}, foreignKey: 'user_id'});
 Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: false}, foreignKey: 'contact_id'});
 
+//joint table for Tags_Contacts
+Tags.belongsToMany(Purchase, {
+  as: 'Purchase', through: {
+     model: Tags_Purchases, unique: false },
+      foreignKey: 'purchase_id'});
 
-
+Purchase.belongsToMany(Tags, {
+  as: 'Tags', through: {
+    model: Tags_Purchases, unique: false },
+      foreignKey: 'tag_id'});
 
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
