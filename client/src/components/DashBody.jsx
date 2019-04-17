@@ -32,6 +32,7 @@ class DashBody extends React.Component {
       purchaseState: 'Purchase This Contact',
       purchaseColor: 'white',
       showNotes: true,
+      csv: '',
     };
     const { classes } = props;
     DashBody.propTypes = {
@@ -86,6 +87,32 @@ purchasedView(){
     .then((purchasedContacts) => {
       console.log(purchasedContacts)
       this.setState({ purchased: purchasedContacts, selectedView: 'purchased' })
+    })
+    .then(() => {
+      const { purchased } = this.state;
+      const csvData = purchased.map(contact => ({
+        firstName: contact.name.split(' ')[0],
+        lastName: contact.name.split(' ')[1],
+        fullName: contact.name,
+        company: contact.company,
+        industry: contact.industry,
+        position: contact.position,
+        phone: contact.phone,
+        email: contact.email,
+        address: contact.Address,
+      }))
+      const csvRows = []
+      const headers = Object.keys(csvData[0])
+      csvRows.push(headers.join(','));
+      for (let row of csvData) {
+        csvRows.push(headers.map(header => {
+          return row[header]
+        }).join(','));
+      }
+      const csv = csvRows.join('\n')
+      this.setState({
+        csv,
+      })
     })
     .catch((err)=>{
       console.log(err);
