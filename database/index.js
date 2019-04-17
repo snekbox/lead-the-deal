@@ -154,6 +154,7 @@ const Tags = sequelize.define('tags', {
   }, //for each tag, there needs to be a contact_id
 })
 
+//joint table for Tags_Purchases for adding tags to a user's purchased contacts
 const Tags_Purchases = sequelize.define('tags_purchases', {
   id: {
     type: Sequelize.INTEGER,
@@ -172,7 +173,7 @@ Contact.belongsTo(User);
 User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: false}, foreignKey: 'user_id'});
 Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: false}, foreignKey: 'contact_id'});
 
-//joint table for Tags_Contacts
+
 Tags.belongsToMany(Purchase, {
   as: 'Purchase', through: {
      model: Tags_Purchases, unique: false },
@@ -186,6 +187,8 @@ Purchase.belongsToMany(Tags, {
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
+
+
 
 
 const purchasedContacts = function (callback, id) {
