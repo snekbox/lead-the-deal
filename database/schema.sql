@@ -62,17 +62,17 @@ USE lead_the_deal;
 
 
 INSERT INTO purchases
-  (user_id, contact_id)
+  (userId, contact_id)
 values(1, 3);
 
 INSERT INTO purchases
-  (user_id, contact_id)
+  (userId, contact_id)
 values(1, 2);
 
 INSERT INTO purchases
-  (user_id, contact_id)
+  (userId, contact_id)
 values(2, 1);
 
 INSERT INTO purchases
-  (user_id, contact_id)
+  (userId, contact_id)
 values(2, 4);
