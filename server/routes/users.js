@@ -5,12 +5,19 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const axios = require('axios');
 const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
+const fastCSV = require('fast-csv');
 
 
 router.post('/:id/upload/bulk', (req, res) => {
-  const csv = req.body;
-  csvArr = Object.keys(csv).join('\n').split('\n');
-  const headers = csvArr.shift()
+  // capture the encoded form data
+  fastCSV
+    .fromStream(req)
+    .on("data", function (data) {
+      console.log(data);
+    })
+    .on("end", function () {
+      console.log("done");
+    });
   // fs.createReadStream(csv)
   //   .pipe(fastCSV())
   //   .on('data', (data) => {

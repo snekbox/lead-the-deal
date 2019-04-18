@@ -72,7 +72,9 @@ class FormView extends React.Component {
   handleCSVUpload () {
     const { userId } = this.props;
     const { uploadedCSV } = this.state;
-    axios.post(`/api/users/${userId}/upload/bulk`, uploadedCSV);
+    const formData = new FormData;
+    formData.append('file', uploadedCSV);
+    axios.post(`/api/users/${userId}/upload/bulk`, formData)
   }
 
   // SEARCH FORM FUNCTIONS BELOW ------------------------------------------------------------ 
