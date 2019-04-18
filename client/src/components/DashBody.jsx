@@ -11,6 +11,7 @@ import SearchView from './SearchView.jsx'
 import { withRouter } from 'react-router'
 import axios from 'axios';
 import AuthService from './AuthService.js';
+import PurchasedContactList from './PurchasedContactList.jsx'
 
 
 class DashBody extends React.Component {
@@ -55,7 +56,12 @@ class DashBody extends React.Component {
 componentWillMount(){
  this.props.history.push('/dashboard')
  document.body.style.backgroundImage = 'none';
-this.props.getUserPoints();
+this.props.getUserPoints()
+this.props.auth.fetch(`/api/users/${this.props.userId}/purchased_contacts`)
+.then((purchasedContacts) => {
+  console.log(purchasedContacts)
+  this.setState({ purchased: purchasedContacts })
+})
 
 }
 
@@ -318,6 +324,7 @@ render(){
   else {
     return (
       <div>
+        
         <Grid container spacing={24}>
           <Grid item xs>
             <div className="left-top-display">
@@ -325,6 +332,7 @@ render(){
             </div>
           </Grid>
           <Grid item xs={9}>
+          <PurchasedContactList contacts={this.state.purchased}/>
             <div>
             </div>
             <LeadInfo currentLead={this.state.currentLead} contactView={this.state.contactView} contactPurchase={this.contactPurchase} />
