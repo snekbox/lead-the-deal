@@ -118,6 +118,10 @@ const Purchase = sequelize.define('purchase', {
   updatedAt: {
     type: Sequelize.DATE,
     defaultValue: sequelize.fn('NOW')
+  },
+  status: {
+    type: Sequelize.STRING,
+    allowNull: false,
   }
 })
 
@@ -128,8 +132,8 @@ const Comment = sequelize.define('comment', {
     allowNull: false,
     primaryKey: true
   },
-  user_id: Sequelize.INTEGER,
-  contact_id: Sequelize.INTEGER,
+  us: Sequelize.INTEGER,
+  contactId: Sequelize.INTEGER,
   comment: Sequelize.STRING,
   createdAt: {
     type: Sequelize.DATE,
@@ -171,9 +175,12 @@ const Tags_Purchases = sequelize.define('tags_purchases', {
 
 User.hasMany(Contact, {as: 'Uploads'});
 Contact.belongsTo(User);
-User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: false}, foreignKey: 'user_id'});
-Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: false}, foreignKey: 'contact_id'});
-
+User.belongsToMany(Contact, {as: 'Contacts', through: {model: Purchase, unique: false}, foreignKey: 'userId'});
+Contact.belongsToMany(User, {as: 'Users', through: {model: Purchase, unique: false}, foreignKey: 'contactId'});
+Purchase.belongsTo(User);
+Purchase.belongsTo(Contact);
+Contact.hasMany(Purchase);
+User.hasMany(Purchase);
 
 Tags.belongsToMany(Purchase, {
   as: 'Purchase', through: {
@@ -240,11 +247,11 @@ const addTag = (tagName, purchaseId) => {
 const purchasedContacts = function (callback, id) {
   Purchase.findAll({
     where: {
-      user_id: id
+      userId: id
     }
   })
     .then((contacts) => {    
-      return contacts.map((contact) => contact.contact_id)
+      return contacts.map((contact) => contact.contactId)
     })
       .then((contactIds)=>{
         return Contact.findAll({
@@ -261,6 +268,23 @@ const purchasedContacts = function (callback, id) {
     })
 }
 
+const getPurchasedContacts = (userId) => {
+  return Purchase.findAll({
+    where: {
+      userId: userId
+    },
+    include: [
+      {model: Contact}
+    ]
+  }).then((result) => {
+      return result.map(model => {
+        return model.contact
+      })
+  }).catch((err) => {
+    return err;
+  });
+}
+
 
 ////////////////////
 ///// EXPORTS //////
@@ -270,6 +294,7 @@ module.exports.sequelize = sequelize;
 module.exports.User = User;
 module.exports.Contact = Contact;
 module.exports.Purchase = Purchase;
-module.exports.purchasedContacts = purchasedContacts
-module.exports.Comment = Comment
+module.exports.purchasedContacts = purchasedContacts;
+module.exports.Comment = Comment;
+module.exports.getPurchasedContacts = getPurchasedContacts;
 

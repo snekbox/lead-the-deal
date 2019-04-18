@@ -6,7 +6,14 @@ const Op = Sequelize.Op;
 const axios = require('axios');
 const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
 
-
+router.get('/test', (req,res) => {
+db.getPurchasedContacts('1')
+.then((result) => {
+  res.send(result)
+}).catch((err) => {
+  
+});
+});
 
 
 router.post('/:id/upload', loginRequired, ensureCorrectUser, (req,res)=>{
@@ -116,9 +123,12 @@ router.get('/:id/uploaded_contacts', loginRequired, ensureCorrectUser, (req, res
 
 router.get('/:id/purchased_contacts', loginRequired, ensureCorrectUser, (req, res) => {
   let userId = req.params.id
-  db.purchasedContacts(function (contacts) {
-    res.send(contacts)
-  }, userId)
+  db.getPurchasedContacts(userId)
+  .then((result) => {
+    res.send(result)  
+  }).catch((err) => {
+    
+  });
 })
 
 router.post('/search/:id', (req, res) => {
@@ -160,11 +170,11 @@ router.post('/search/:id', (req, res) => {
   }
   db.Purchase.findAll({
     where: {
-      user_id: req.params.id
+      userId: req.params.id
     }
   })
     .then((contacts) => {
-      let contactId = contacts.map((contact) => contact.contact_id)
+      let contactId = contacts.map((contact) => contact.contactId)
       db.Contact.findAll({
         where: {
           name: query.name,
@@ -199,8 +209,9 @@ router.post(`/purchase_contact/:id/:contactId`, loginRequired, ensureCorrectUser
   const userId = req.params.id;
   const contactId = req.params.contactId
   db.Purchase.create({
-    user_id: userId, /////------------------------------------------------------------passport todo
-    contact_id: contactId,
+    userId: userId, /////------------------------------------------------------------passport todo
+    contactId: contactId,
+    status: 'Open'
   })
     .then((result) => {
       return db.User.findOne({
@@ -239,8 +250,8 @@ router.get(`/comments/:id/:contactId`, (req,res)=>{
   const contactId = req.params.contactId
   db.Comment.findAll({
     where:{
-      user_id: userId,
-      contact_id: contactId
+      userId: userId,
+      contactId: contactId
     }
   })
     .then((comments) => {
@@ -262,15 +273,15 @@ router.post(`/comments/:id/:contactId`, loginRequired, ensureCorrectUser, (req, 
   const userId = req.params.id;
   const contactId = req.params.contactId
   return db.Comment.create({
-      user_id: userId,
-      contact_id: contactId,
+      userId: userId,
+      contactId: contactId,
       comment: req.body.body
   })
     .then((result) => {
       return db.Comment.findAll({
         where: {
-          user_id: userId,
-          contact_id: contactId,
+          userId: userId,
+          contactId: contactId,
         }
       })
     })

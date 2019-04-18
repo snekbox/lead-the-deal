@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import FormView from './FormView.jsx'
 
 
-const ContactList = ({uploaded, purchased, selectedView, selectContact, searchContact, uploadContact}) => {
+const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchContact, uploadContact, downloadCSV}) => {
   if (selectedView === 'uploaded' && uploaded){
     if (uploaded.length > 0){
       return (
@@ -55,6 +55,9 @@ const ContactList = ({uploaded, purchased, selectedView, selectContact, searchCo
                 </div>
               )
             })}
+            <Button onClick={downloadCSV} color="primary">
+              Download all purchased contacts
+            </Button>
           {/* </Paper> */}
         </div>
       )
