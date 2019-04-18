@@ -75,6 +75,15 @@ class FormView extends React.Component {
     const formData = new FormData;
     formData.append('file', uploadedCSV);
     axios.post(`/api/users/${userId}/upload/bulk`, formData)
+    .then(() => {
+      return axios.get(`/api/users/${userId}/points`)
+    })
+    .then( () => {
+      this.props.getUserPoints(userId);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
 
   // SEARCH FORM FUNCTIONS BELOW ------------------------------------------------------------ 

@@ -46,6 +46,7 @@ router.post('/:id/upload/bulk', (req, res) => {
           })
           .then((points) => {
             const newPoints = points + results.length;
+            updatedPoints = newPoints;
             return db.User.update(
               { points: newPoints },
               {
@@ -55,59 +56,34 @@ router.post('/:id/upload/bulk', (req, res) => {
               }
             )
           })
-          .then((result) => {
-            if (phone === 5555555555 || !result.data.belongs_to[0]) {
-              return false
-            }
-            if (result.data.belongs_to[0].lastname) {
-              lastName = result.data.belongs_to[0].lastname.toLowerCase();
-            }
-            else {
-              return false
-            }
-            if (result.data.belongs_to[0].firstname) {
-              firstName = result.data.belongs_to[0].firstname.toLowerCase();
-            }
-            else {
-              return false
-            }
-            const submittedName = upload.name.toLowerCase();
-            if (submittedName.includes(lastName) || submittedName.includes(firstName)) {
-              return true
-            }
-            else {
-              return false
-            }
-          })
-          .then((verified) => {
-            if (verified) {
-              return db.Contact.update(
-                { verified: true },
-                {
-                  where: {
-                    id: contactId
-                  }
-                }
-              )
-            }
-          })
           .catch((err) => {
             console.log(err)
             res.send(err);
           })
       })
+      res.send();
     })
 })
 
-
+router.get('/:id/points', (req, res) => {
+  const userId = req.params.id;
+  db.User.findOne({
+    where: {
+      id: userId
+    }
+  })
+  .then((user) => {
+    res.json(user.points);
+  })
+})
 
 router.get('/test', (req,res) => {
-db.getPurchasedContacts('1')
-.then((result) => {
-  res.send(result)
-}).catch((err) => {
-  
-});
+  db.getPurchasedContacts('1')
+  .then((result) => {
+    res.send(result)
+  }).catch((err) => {
+    
+  });
 });
 
 router.post('/:id/upload', loginRequired, ensureCorrectUser, (req,res)=>{
