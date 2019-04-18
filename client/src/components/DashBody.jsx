@@ -32,6 +32,7 @@ class DashBody extends React.Component {
       purchaseState: 'Purchase This Contact',
       purchaseColor: 'white',
       showNotes: true,
+      csv: '',
     };
     const { classes } = props;
     DashBody.propTypes = {
@@ -48,6 +49,7 @@ class DashBody extends React.Component {
     this.handleComment = this.handleComment.bind(this)
     this.commentBody = this.commentBody.bind(this)
     this.showModal = this.showModal.bind(this);
+    this.downloadCSV = this.downloadCSV.bind(this);
   }
 
 componentWillMount(){
@@ -87,9 +89,49 @@ purchasedView(){
       console.log(purchasedContacts)
       this.setState({ purchased: purchasedContacts, selectedView: 'purchased' })
     })
+    .then(() => {
+      const { purchased } = this.state;
+      const csvData = purchased.map(contact => ({
+        firstName: contact.name.split(' ')[0],
+        lastName: contact.name.split(' ')[1],
+        fullName: contact.name,
+        company: contact.company,
+        industry: contact.industry,
+        position: contact.position,
+        phone: contact.phone,
+        email: contact.email,
+        address: contact.Address,
+      }))
+      const csvRows = []
+      const headers = Object.keys(csvData[0])
+      csvRows.push(headers.join(','));
+      for (let row of csvData) {
+        csvRows.push(headers.map(header => {
+          const escaped = ('' + row[header]).replace(/"/g, '\\"')
+          return `"${escaped}"`
+        }).join(','));
+      }
+      const csv = csvRows.join('\n')
+      this.setState({
+        csv,
+      })
+    })
     .catch((err)=>{
       console.log(err);
     })
+}
+
+downloadCSV() {
+  const { csv } = this.state;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('hidden', '');
+  a.setAttribute('href', url);
+  a.setAttribute('download', 'exports.csv');
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 selectContact(contactId, list, view){
@@ -255,7 +297,7 @@ render(){
           <div className="left-bottom-display">
             <ContactList uploaded={this.state.uploaded} purchased={this.state.purchased} 
               selectedView={this.state.selectedView} selectContact={this.selectContact} 
-              searchContact={this.searchContact} uploadContact={this.uploadContact}/>
+                searchContact={this.searchContact} uploadContact={this.uploadContact} downloadCSV={this.downloadCSV} />
             <SearchView searchedContacts={this.state.searchedContacts} selectedView={this.state.selectedView} selectContact={this.selectContact}/>
           </div>
   
