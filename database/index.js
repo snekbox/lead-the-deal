@@ -198,11 +198,9 @@ const getPurchasedContacts = (userId) => {
       {model: Contact}
     ]
   }).then((result) => {
-    if (!result) {
-      return 'outta my face'
-    } else {
-      return result
-    }
+      return result.map(model => {
+        return model.contact
+      })
   }).catch((err) => {
     return err;
   });

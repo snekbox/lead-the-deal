@@ -122,9 +122,12 @@ router.get('/:id/uploaded_contacts', loginRequired, ensureCorrectUser, (req, res
 
 router.get('/:id/purchased_contacts', loginRequired, ensureCorrectUser, (req, res) => {
   let userId = req.params.id
-  db.purchasedContacts(function (contacts) {
-    res.send(contacts)
-  }, userId)
+  db.getPurchasedContacts(userId)
+  .then((result) => {
+    res.send(result)  
+  }).catch((err) => {
+    
+  });
 })
 
 router.post('/search/:id', (req, res) => {
