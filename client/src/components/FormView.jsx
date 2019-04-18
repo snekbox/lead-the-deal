@@ -25,10 +25,12 @@ class FormView extends React.Component {
       searchIndustry: '',
       searchPosition: '',
       searchAddress: '',
+      uploadedCSV: null,
     };
     this.query = {};
     this.upload = {};
-
+    this.handleFileSelect = this.handleFileSelect.bind(this);
+    this.handleCSVUpload = this.handleCSVUpload.bind(this);
   }
 
   handleSearch(event) {
@@ -43,6 +45,7 @@ class FormView extends React.Component {
     })
     this.props.searchContact(this.query)
   }
+
   handleUpload(){
     event.preventDefault();
     console.log(this.upload)
@@ -58,6 +61,29 @@ class FormView extends React.Component {
     this.props.uploadContact(this.upload);
     // props.searchContact(this.upload)
     
+  }
+
+  handleFileSelect(event) {
+    this.setState({
+      uploadedCSV: event.target.files[0],
+    })
+  }
+
+  handleCSVUpload () {
+    const { userId } = this.props;
+    const { uploadedCSV } = this.state;
+    const formData = new FormData;
+    formData.append('file', uploadedCSV);
+    axios.post(`/api/users/${userId}/upload/bulk`, formData)
+    .then(() => {
+      return axios.get(`/api/users/${userId}/points`)
+    })
+    .then( () => {
+      this.props.getUserPoints(userId);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
 
   // SEARCH FORM FUNCTIONS BELOW ------------------------------------------------------------ 
@@ -128,6 +154,20 @@ class FormView extends React.Component {
             <Input placeholder="Address" fullWidth={true} required={true} onChange={(event)=>{this.uploadAddress(event.target.value)}} value={this.state.uploadAddress}></Input>
             <div>
               <Input type="submit" value="Upload" />
+            </div>
+            <div>
+              <input
+                style={{ display: 'none' }}
+                type="file"
+                onChange={this.handleFileSelect}
+                ref={fileInput => this.fileInput = fileInput}
+              />
+              <Button onClick={() => this.fileInput.click()} >
+                Choose CSV For Upload
+              </Button>
+              <Button onClick={this.handleCSVUpload}>
+                Upload File
+              </Button>
             </div>
           </form>
         </div>

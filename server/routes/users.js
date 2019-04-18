@@ -5,14 +5,85 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const axios = require('axios');
 const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
+const fastCSV = require('fast-csv');
+
+
+router.post('/:id/upload/bulk', (req, res) => {
+  const userId = req.params.id;
+  const results = [];
+  fastCSV
+    .fromStream(req)
+    .on("data", function (data) {
+      if (data.length !== 0 && data[0][0] !== '-' && data[0].slice(0, 19) !== 'Content-Disposition' && data[0].slice(0, 12) !== 'Content-Type') {
+        results.push(data);
+      }
+    })
+    .on("end", function () {
+      const headers = results.shift();
+      results.forEach( row => {
+        db.Contact.create({
+          name: row[3],
+          position: row[6],
+          company: row[4],
+          industry: row[5],
+          phone: row[7],
+          email: row[8],
+          Address: row[9],
+          verified: false,
+          times_purchased: 0,
+          userId: userId
+        })
+          .then((result) => {
+            contactId = result.id
+            return db.User.findOne({
+              where: {
+                id: userId
+              }
+            })
+          })
+          .then((user) => {
+            return user.points
+          })
+          .then((points) => {
+            const newPoints = points + results.length;
+            updatedPoints = newPoints;
+            return db.User.update(
+              { points: newPoints },
+              {
+                where: {
+                  id: userId
+                }
+              }
+            )
+          })
+          .catch((err) => {
+            console.log(err)
+            res.send(err);
+          })
+      })
+      res.send();
+    })
+})
+
+router.get('/:id/points', (req, res) => {
+  const userId = req.params.id;
+  db.User.findOne({
+    where: {
+      id: userId
+    }
+  })
+  .then((user) => {
+    res.json(user.points);
+  })
+})
 
 router.get('/test', (req,res) => {
-db.getPurchasedContacts('1')
-.then((result) => {
-  res.send(result)
-}).catch((err) => {
-  
-});
+  db.getPurchasedContacts('1')
+  .then((result) => {
+    res.send(result)
+  }).catch((err) => {
+    
+  });
 });
 
 router.post('/:id/upload', loginRequired, ensureCorrectUser, (req,res)=>{
