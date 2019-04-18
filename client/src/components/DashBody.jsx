@@ -297,7 +297,8 @@ render(){
           <div className="left-bottom-display">
             <ContactList uploaded={this.state.uploaded} purchased={this.state.purchased} 
               selectedView={this.state.selectedView} selectContact={this.selectContact} 
-                searchContact={this.searchContact} uploadContact={this.uploadContact} downloadCSV={this.downloadCSV} />
+              searchContact={this.searchContact} uploadContact={this.uploadContact} 
+                downloadCSV={this.downloadCSV} userId={this.props.userId} />
             <SearchView searchedContacts={this.state.searchedContacts} selectedView={this.state.selectedView} selectContact={this.selectContact}/>
           </div>
   

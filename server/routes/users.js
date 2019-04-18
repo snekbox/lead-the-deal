@@ -7,6 +7,22 @@ const axios = require('axios');
 const { loginRequired, ensureCorrectUser } = require('../middleware/auth')
 
 
+router.post('/:id/upload/bulk', (req, res) => {
+  const csv = req.body;
+  csvArr = Object.keys(csv).join('\n').split('\n');
+  const headers = csvArr.shift()
+  // fs.createReadStream(csv)
+  //   .pipe(fastCSV())
+  //   .on('data', (data) => {
+  //     console.log(data);
+  //   })
+  //   .on('end', () => {
+  //     console.log('Finished')
+  //   })
+})
+
+
+
 
 router.post('/:id/upload', loginRequired, ensureCorrectUser, (req,res)=>{
   const userId = req.params.id

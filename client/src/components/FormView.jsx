@@ -25,10 +25,12 @@ class FormView extends React.Component {
       searchIndustry: '',
       searchPosition: '',
       searchAddress: '',
+      uploadedCSV: null,
     };
     this.query = {};
     this.upload = {};
-
+    this.handleFileSelect = this.handleFileSelect.bind(this);
+    this.handleCSVUpload = this.handleCSVUpload.bind(this);
   }
 
   handleSearch(event) {
@@ -43,6 +45,7 @@ class FormView extends React.Component {
     })
     this.props.searchContact(this.query)
   }
+
   handleUpload(){
     event.preventDefault();
     console.log(this.upload)
@@ -58,6 +61,18 @@ class FormView extends React.Component {
     this.props.uploadContact(this.upload);
     // props.searchContact(this.upload)
     
+  }
+
+  handleFileSelect(event) {
+    this.setState({
+      uploadedCSV: event.target.files[0],
+    })
+  }
+
+  handleCSVUpload () {
+    const { userId } = this.props;
+    const { uploadedCSV } = this.state;
+    axios.post(`/api/users/${userId}/upload/bulk`, uploadedCSV);
   }
 
   // SEARCH FORM FUNCTIONS BELOW ------------------------------------------------------------ 
@@ -133,13 +148,13 @@ class FormView extends React.Component {
               <input
                 style={{ display: 'none' }}
                 type="file"
-                onChange={console.log('changed')}
+                onChange={this.handleFileSelect}
                 ref={fileInput => this.fileInput = fileInput}
               />
               <Button onClick={() => this.fileInput.click()} >
                 Choose CSV For Upload
               </Button>
-              <Button>
+              <Button onClick={this.handleCSVUpload}>
                 Upload File
               </Button>
             </div>

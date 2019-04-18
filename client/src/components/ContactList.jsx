@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import FormView from './FormView.jsx'
 
 
-const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchContact, uploadContact, downloadCSV}) => {
+const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchContact, uploadContact, downloadCSV, userId}) => {
   if (selectedView === 'uploaded' && uploaded){
     if (uploaded.length > 0){
       return (
@@ -70,7 +70,7 @@ const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchC
   }
   else if (selectedView === 'upload') {
     return (
-        <FormView selectedView={selectedView} uploadContact={uploadContact}/>
+        <FormView selectedView={selectedView} uploadContact={uploadContact} userId={userId} />
     )
   }
   else if (selectedView === 'search'){
