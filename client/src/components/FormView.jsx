@@ -129,6 +129,20 @@ class FormView extends React.Component {
             <div>
               <Input type="submit" value="Upload" />
             </div>
+            <div>
+              <input
+                style={{ display: 'none' }}
+                type="file"
+                onChange={console.log('changed')}
+                ref={fileInput => this.fileInput = fileInput}
+              />
+              <Button onClick={() => this.fileInput.click()} >
+                Choose CSV For Upload
+              </Button>
+              <Button>
+                Upload File
+              </Button>
+            </div>
           </form>
         </div>
       );
