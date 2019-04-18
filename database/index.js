@@ -145,29 +145,8 @@ const Comment = sequelize.define('comment', {
   }
 })
 
-const Tags = sequelize.define('tags', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  tag_name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-})
 
 //joint table for Tags_Purchases for adding tags to a user's purchased contacts
-const Tags_Purchases = sequelize.define('tags_purchases', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  }, 
-
-})
 
 //////////////////////
 /////RELATIONSHIPS////
@@ -182,15 +161,33 @@ Purchase.belongsTo(Contact);
 Contact.hasMany(Purchase);
 User.hasMany(Purchase);
 
-Tags.belongsToMany(Purchase, {
-  as: 'Purchase', through: {
-     model: Tags_Purchases, unique: false },
-      foreignKey: 'purchase_id'});
+const Tag = sequelize.define('tag', {
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+})
 
-Purchase.belongsToMany(Tags, {
-  as: 'Tags', through: {
-    model: Tags_Purchases, unique: false },
-      foreignKey: 'tag_id'});
+const Tag_Purchase = sequelize.define('tag_purchase');
+
+//there can be many contacts sharing one tag
+Tag.belongsToMany(Purchase, { through: Tag_Purchase });
+//a contact can have many tags
+Purchase.belongsToMany(Tag, { through: Tag_Purchase });
+//joint table between tags/purchases
+Tag_Purchase.hasMany(Tag);
+Tag_Purchase.hasMany(Purchase);
+
+
+// Tags.belongsToMany(Purchase, {
+//   as: 'Purchase', through: {
+//      model: Tag_Purchase, unique: false },
+//       foreignKey: 'purchase_id'});
+
+// Purchase.belongsToMany(Tags, {
+//   as: 'Tags', through: {
+//     model: Tag_Purchase, unique: false },
+//       foreignKey: 'tag_id'});
 
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
@@ -203,46 +200,67 @@ Purchase.belongsToMany(Tags, {
 
 // issue: tagName is null when db is queried, my attempts to use promises get thwarted af
 
-
+const addTag = (tagText, purchaseId) => {
+  console.log(tagText, purchaseId);
+  Tag.create({
+    name: tagText,
+  })
+  .then((text)=>{
+    return text;
+  })
+  // .then((tag)=>{
+  //   return Tag_Purchase.create({
+  //     tag: tag.id,
+  //     purchase: purchaseId
+  //   })
+  //   //add tagId and purchaseId to tag_purchase joint table
+  // })
+  // .then((tagPurchaseId) =>{
+  //   return tagPurchaseId; //this is the id of the joint entry for tag_purchase for the input tag. this is for use in rendering
+  // })
+  .catch((err)=>{
+    console.error(err, 'error line 216 index.js')
+  })
+}
 //purchase id stores a contact, so to add an id
 
 
-const addTag = (tagName, purchaseId) => {
-    Tags.create({                         //adds tag to tag table
-      tag_name: tagName, 
-    })
+// const addTag = (tagName, purchaseId) => {
+//     Tags.create({                         //adds tag to tag table
+//       tag_name: tagName, 
+//     })
 
-      return Tags.findOne({ //grabs the newly created tag, returns it to add to tags_purchases table
-        where: {
-          tag_name: tagName,
-        }
-      })
-      .then((tagInfo)=>{
-        return tagInfo.id; //grabs newly created tag's ID, once tag is retrieved
-      })
-      .then((tagId)=>{
-        if(tagId && purchaseId){    //makes sure no input is null
-          Tags_Purchases.create({   //adds tagId and purchaseId to joint table
-            tag_id: tagId,
-            purchase_id: purchaseId,
-          })
-          .then(()=>{
-            return Tags_Purchases.findAll({
-              where: {
-                purchase_id: purchaseId, //grabs all tags associated with this purchased client
-              }
-            })
-          })
-          .then((allTagsAndPurchases)=>{ //sends data back to server
-            return allTagsAndPurchases;
-          })
-        }
-      })
-    .catch((err)=>{
-      console.log('tags not added', err);
-    })
+//       return Tags.findOne({ //grabs the newly created tag, returns it to add to tags_purchases table
+//         where: {
+//           tag_name: tagName,
+//         }
+//       })
+//       .then((tagInfo)=>{
+//         return tagInfo.id; //grabs newly created tag's ID, once tag is retrieved
+//       })
+//       .then((tagId)=>{
+//         if(tagId && purchaseId){    //makes sure no input is null
+//           Tags_Purchases.create({   //adds tagId and purchaseId to joint table
+//             tag_id: tagId,
+//             purchase_id: purchaseId,
+//           })
+//           .then(()=>{
+//             return Tags_Purchases.findAll({
+//               where: {
+//                 purchase_id: purchaseId, //grabs all tags associated with this purchased client
+//               }
+//             })
+//           })
+//           .then((allTagsAndPurchases)=>{ //sends data back to server
+//             return allTagsAndPurchases;
+//           })
+//         }
+//       })
+//     .catch((err)=>{
+//       console.log('tags not added', err);
+//     })
   
-}
+// }
 
 const purchasedContacts = function (callback, id) {
   Purchase.findAll({
