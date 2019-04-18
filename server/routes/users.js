@@ -9,23 +9,94 @@ const fastCSV = require('fast-csv');
 
 
 router.post('/:id/upload/bulk', (req, res) => {
-  // capture the encoded form data
+  const userId = req.params.id;
+  const results = [];
   fastCSV
     .fromStream(req)
     .on("data", function (data) {
-      console.log(data);
+      if (data.length !== 0 && data[0][0] !== '-' && data[0].slice(0, 19) !== 'Content-Disposition' && data[0].slice(0, 12) !== 'Content-Type') {
+        results.push(data);
+      }
     })
     .on("end", function () {
-      console.log("done");
-    });
-  // fs.createReadStream(csv)
-  //   .pipe(fastCSV())
-  //   .on('data', (data) => {
-  //     console.log(data);
-  //   })
-  //   .on('end', () => {
-  //     console.log('Finished')
-  //   })
+      const headers = results.shift();
+      results.forEach( row => {
+        db.Contact.create({
+          name: row[3],
+          position: row[6],
+          company: row[4],
+          industry: row[5],
+          phone: row[7],
+          email: row[8],
+          Address: row[9],
+          verified: false,
+          times_purchased: 0,
+          userId: userId
+        })
+          .then((result) => {
+            contactId = result.id
+            return db.User.findOne({
+              where: {
+                id: userId
+              }
+            })
+          })
+          .then((user) => {
+            return user.points
+          })
+          .then((points) => {
+            const newPoints = points + results.length;
+            return db.User.update(
+              { points: newPoints },
+              {
+                where: {
+                  id: userId
+                }
+              }
+            )
+          })
+          .then((result) => {
+            if (phone === 5555555555 || !result.data.belongs_to[0]) {
+              return false
+            }
+            if (result.data.belongs_to[0].lastname) {
+              lastName = result.data.belongs_to[0].lastname.toLowerCase();
+            }
+            else {
+              return false
+            }
+            if (result.data.belongs_to[0].firstname) {
+              firstName = result.data.belongs_to[0].firstname.toLowerCase();
+            }
+            else {
+              return false
+            }
+            const submittedName = upload.name.toLowerCase();
+            if (submittedName.includes(lastName) || submittedName.includes(firstName)) {
+              return true
+            }
+            else {
+              return false
+            }
+          })
+          .then((verified) => {
+            if (verified) {
+              return db.Contact.update(
+                { verified: true },
+                {
+                  where: {
+                    id: contactId
+                  }
+                }
+              )
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            res.send(err);
+          })
+      })
+    })
 })
 
 
