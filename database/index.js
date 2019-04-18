@@ -151,7 +151,7 @@ const Tags = sequelize.define('tags', {
   tag_name: {
     type: Sequelize.STRING,
     allowNull: false,
-  }, //for each tag, there needs to be a contact_id
+  },
 })
 
 //joint table for Tags_Purchases for adding tags to a user's purchased contacts
@@ -162,6 +162,7 @@ const Tags_Purchases = sequelize.define('tags_purchases', {
     allowNull: false,
     primaryKey: true,
   }, 
+
 })
 
 //////////////////////
@@ -187,9 +188,54 @@ Purchase.belongsToMany(Tags, {
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
+//Create D.B. helper function to add tag to user's purchased contact
+//1. takes in a tag name, adds tag to tags table. 
+//2. once the tag has been created, the table is queried by tag name to acquire the tag's ID
+//3. with the tag's ID, the tag ID and given purchase ID(representing a purchased client), associate the current client who is being tagged's ID with their tag's ID
+//4. query tags_purchases for
+
+// issue: tagName is null when db is queried, my attempts to use promises get thwarted af
 
 
+//purchase id stores a contact, so to add an id
 
+
+const addTag = (tagName, purchaseId) => {
+    Tags.create({                         //adds tag to tag table
+      tag_name: tagName, 
+    })
+
+      return Tags.findOne({ //grabs the newly created tag, returns it to add to tags_purchases table
+        where: {
+          tag_name: tagName,
+        }
+      })
+      .then((tagInfo)=>{
+        return tagInfo.id; //grabs newly created tag's ID, once tag is retrieved
+      })
+      .then((tagId)=>{
+        if(tagId && purchaseId){    //makes sure no input is null
+          Tags_Purchases.create({   //adds tagId and purchaseId to joint table
+            tag_id: tagId,
+            purchase_id: purchaseId,
+          })
+          .then(()=>{
+            return Tags_Purchases.findAll({
+              where: {
+                purchase_id: purchaseId, //grabs all tags associated with this purchased client
+              }
+            })
+          })
+          .then((allTagsAndPurchases)=>{ //sends data back to server
+            return allTagsAndPurchases;
+          })
+        }
+      })
+    .catch((err)=>{
+      console.log('tags not added', err);
+    })
+  
+}
 
 const purchasedContacts = function (callback, id) {
   Purchase.findAll({
@@ -219,7 +265,7 @@ const purchasedContacts = function (callback, id) {
 ////////////////////
 ///// EXPORTS //////
 ////////////////////
-
+module.exports.addTag = addTag;
 module.exports.sequelize = sequelize;
 module.exports.User = User;
 module.exports.Contact = Contact;

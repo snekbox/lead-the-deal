@@ -11,7 +11,7 @@ const authRoutes    = require('./routes/auth')
 const usersRoute   = require('./routes/users')
 const {loginRequired, ensureCorrectUser} = require('./middleware/auth.js')
 
-
+const { addTag } = require('../database/index'); //importing addTag from db
 
 const errorHandler  = require('../handlers/error')
 const Sequelize = require('sequelize');
@@ -21,7 +21,23 @@ const Op = Sequelize.Op;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser());
 app.use(express.static(path.join(__dirname, '../client/dist')));
+
+
+//to add tags to database for later retrieval
+
+app.post('/tags', (req, res)=>{ 
+  return addTag(req.query.tagBody, req.query.purchaseId) //adds tag to tags table, 
+    .then((response)=>{  
+      console.log(response, 'response');         //adds tag id/purchased client id to joint table
+      res.send(response);
+    })
+    .catch((err)=>{
+      console.log(err, 'err line 18 users.js')
+    });
+})
+
 
 // app.get('*', function (request, response) {
 //   response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'))
@@ -34,6 +50,11 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 // app.use(session({secret: 'cat', resave: false, saveUninitialized: false}));
 // app.use(passport.initialize());
 // app.use(passport.session());
+
+
+
+
+
 
 
 app.use('/api/auth', authRoutes);
