@@ -28,7 +28,8 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 //to add tags to database for later retrieval
 
 app.post('/tags', (req, res)=>{ 
-  return addTag(req.query.tagBody, req.query.purchaseId)  //only issue is gotta find a way to get a piece of info that links client to purchaseID so we can hit the db up for it
+  const purchaseId = req.query.purchaseId;
+  return addTag(req.query.tagText, purchaseId)  //only issue is gotta find a way to get a piece of info that links client to purchaseID so we can hit the db up for it
     .then((response)=>{  
       console.log(response, 'response');   
       res.json(response);
@@ -36,6 +37,11 @@ app.post('/tags', (req, res)=>{
     .catch((err)=>{
       console.log(err, 'err line 18 users.js')
     });
+})
+
+//gets all tags for all users, for rendering on mount
+app.get('/tags', (req, res)=>{
+  
 })
 
 

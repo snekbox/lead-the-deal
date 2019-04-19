@@ -177,20 +177,13 @@ const tagPurchase = sequelize.define('tagPurchase', {
 Purchase.belongsToMany(Tag, {as: 'Tags', through: { model: tagPurchase }, foreignKey: 'purchaseId'});
 Tag.belongsToMany(Purchase, {as: 'Purchases', through: { model: tagPurchase }, foreignKey: 'tagId'});
 
-
-// Tags.belongsToMany(Purchase, {
-//   as: 'Purchase', through: {
-//      model: Tag_Purchase, unique: false },
-//       foreignKey: 'purchase_id'});
-
-// Purchase.belongsToMany(Tags, {
-//   as: 'Tags', through: {
-//     model: Tag_Purchase, unique: false },
-//       foreignKey: 'tag_id'});
-
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
+
+//query on render brings back all contacts for a user, 
+//in state, purchaseId needs to be a component in that model object
+//
 
 
 //Create D.B. helper function to add tag to user's purchased contact
@@ -225,6 +218,11 @@ const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered aut
   });
 }
 
+const getAllTagsForAllPurchases = () => {
+  //do a tags.findAll for each purchase ID
+  tagPurchase.findAll()
+    //get each tag ID for each purchase, return each client as object with tags in an array on them
+}
 
 
 
