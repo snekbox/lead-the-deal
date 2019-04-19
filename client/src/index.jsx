@@ -7,6 +7,7 @@ import Login from './components/Login.jsx';
 import Register from './components/Register.jsx';
 import {BrowserRouter as Router, Route, Link, Switch, Redirect} from 'react-router-dom'
 import axios from 'axios';
+import Axios from 'axios';
 import AuthService from './components/AuthService.js';
 import UserHeader from './components/UserHeader.jsx';
 

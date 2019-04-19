@@ -168,10 +168,7 @@ const Tag = sequelize.define('tag', {
   },
 })
 
-const tagPurchase = sequelize.define('tagPurchase', {
-  tagId: Sequelize.INTEGER,
-  purchaseId: Sequelize.INTEGER,
-});
+const tagPurchase = sequelize.define('tagPurchase');
 
 
 Purchase.belongsToMany(Tag, {as: 'Tags', through: { model: tagPurchase }, foreignKey: 'purchaseId'});
@@ -187,6 +184,10 @@ Tag.belongsToMany(Purchase, {as: 'Purchases', through: { model: tagPurchase }, f
 
 
 //Create D.B. helper function to add tag to user's purchased contact
+
+//questions I have:
+//to associate a tag with a client, I needed to create a joint table between the tag ID and the purchase ID
+//then, I need to return an array of objects containing
 
 const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
   return Tag.create({
@@ -218,10 +219,8 @@ const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered aut
   });
 }
 
-const getAllTagsForAllPurchases = () => {
-  //do a tags.findAll for each purchase ID
-  tagPurchase.findAll()
-    //get each tag ID for each purchase, return each client as object with tags in an array on them
+function getClientFromPurchase () {
+
 }
 
 
