@@ -43,6 +43,9 @@ const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchC
         <div>
           {/* <Paper> */}
             <div className="lead-header lead-row, dashboard">
+            <Button onClick={downloadCSV} color="secondary">
+              Download all purchased contacts
+            </Button>
             <h4> Name, Company </h4> 
           </div>
           
@@ -55,9 +58,6 @@ const ContactList = ({ uploaded, purchased, selectedView, selectContact, searchC
                 </div>
               )
             })}
-            <Button onClick={downloadCSV} color="primary">
-              Download all purchased contacts
-            </Button>
           {/* </Paper> */}
         </div>
       )
