@@ -199,7 +199,8 @@ const getPurchasedContacts = (userId) => {
     ]
   }).then((result) => {
       return result.map(model => {
-        return model.contact
+        model.contact.dataValues.status = model.status;
+        return model.contact;
       })
   }).catch((err) => {
     return err;
