@@ -162,7 +162,7 @@ Contact.hasMany(Purchase);
 User.hasMany(Purchase);
 
 const Tag = sequelize.define('tag', {
-  name: {
+  text: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -170,10 +170,12 @@ const Tag = sequelize.define('tag', {
 
 const tagPurchase = sequelize.define('tagPurchase');
 
-
 Purchase.belongsToMany(Tag, {as: 'Tags', through: { model: tagPurchase }, foreignKey: 'purchaseId'});
 Tag.belongsToMany(Purchase, {as: 'Purchases', through: { model: tagPurchase }, foreignKey: 'tagId'});
-
+Tag.hasMany(tagPurchase);
+Purchase.hasMany(tagPurchase);
+tagPurchase.belongsTo(Tag);
+tagPurchase.belongsTo(Purchase);
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
@@ -191,7 +193,7 @@ Tag.belongsToMany(Purchase, {as: 'Purchases', through: { model: tagPurchase }, f
 
 const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
   return Tag.create({
-    name: tagText,
+    text: tagText,
   })
   .then((text)=>{
     return text.dataValues.id;
@@ -207,11 +209,16 @@ const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered aut
     return tagPurchase.findAll({
       where: {
         purchaseId: purchaseId
-      }
+      },
+      include: [
+        {model: Tag},
+        {model: Purchase,
+        include: [Contact]
+      },
+      ]
     })
   })
-  .then((tagPurchaseArray)=>{ //array of purchased clients where ID
-    //get all tags where the id matches any of the ID's in tagPurchaseArray
+  .then((tagPurchaseArray)=>{ 
     return tagPurchaseArray;
   })
   .catch((err)=>{

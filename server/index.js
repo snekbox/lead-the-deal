@@ -31,7 +31,6 @@ app.post('/tags', (req, res)=>{
   const purchaseId = req.query.purchaseId;
   return addTag(req.query.tagText, purchaseId)  //only issue is gotta find a way to get a piece of info that links client to purchaseID so we can hit the db up for it
     .then((response)=>{  
-      console.log(response, 'response');   
       res.json(response);
     })
     .catch((err)=>{
