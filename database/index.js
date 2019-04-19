@@ -272,6 +272,10 @@ const getPurchasedContacts = (userId) => {
     ]
   }).then((result) => {
       return result.map(model => {
+        model.contact.dataValues.status = model.status;
+        model.contact.dataValues.tags = model.tagPurchases.map((tag)=>{
+          return tag.tag.text;
+        })
         return model.contact
       })
   }).catch((err) => {
