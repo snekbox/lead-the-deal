@@ -191,9 +191,16 @@ tagPurchase.belongsTo(Purchase);
 //to associate a tag with a client, I needed to create a joint table between the tag ID and the purchase ID
 //then, I need to return an array of objects containing
 
-const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
-  return Tag.create({
-    text: tagText,
+const addTag = (tagText, userId, contactId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
+  var purchaseId;
+  return Purchase.findAll({
+    where: { userId: userId, contactId: contactId }
+  })
+  .then((purchaseRow) => {
+    purchaseId = purchaseRow[0].id;
+    return Tag.create({
+      text: tagText,
+    })
   })
   .then((text)=>{
     return text.dataValues.id;
@@ -224,10 +231,6 @@ const addTag = (tagText, purchaseId) => { //purchased ID needs to be entered aut
   .catch((err)=>{
     console.log(err, 'error line 220 index.js database')
   });
-}
-
-function getClientFromPurchase () {
-
 }
 
 
@@ -263,7 +266,9 @@ const getPurchasedContacts = (userId) => {
       userId: userId
     },
     include: [
-      {model: Contact}
+      {model: Contact},
+      {model: tagPurchase,
+      include: [Tag]}
     ]
   }).then((result) => {
       return result.map(model => {
