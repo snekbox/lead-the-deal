@@ -28,10 +28,10 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 //to add tags to database for later retrieval
 
 app.post('/tags', (req, res)=>{ 
-  return addTag(req.query.tagBody, req.query.purchaseId) //adds tag to tags table, 
+  return addTag(req.query.tagBody, req.query.purchaseId)  
     .then((response)=>{  
-      console.log(response, 'response');         //adds tag id/purchased client id to joint table
-      res.send(response);
+      console.log(response, 'response');   
+      res.json(response);
     })
     .catch((err)=>{
       console.log(err, 'err line 18 users.js')
@@ -39,21 +39,9 @@ app.post('/tags', (req, res)=>{
 })
 
 
-// app.get('*', function (request, response) {
-//   response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'))
-// })
-
 //////////////////////////////////////////////////////////
 ///////////// ROUTES ////////////////////////////
 //////////////////////////////////////////////////////
-
-// app.use(session({secret: 'cat', resave: false, saveUninitialized: false}));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-
-
-
 
 
 
