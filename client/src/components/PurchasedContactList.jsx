@@ -7,7 +7,7 @@ import PurchasedContactListEntry from './PurchasedContactListEntry.jsx';
 
 const PurchasedContactList = ({ contacts }) => (
     <div>
-      { contacts.map(contact => <PurchasedContactListEntry contact={contact} key={contact.id} />)}
+      { Array.isArray(contacts) ? contacts.map(contact => <PurchasedContactListEntry contact={contact} key={contact.id} />) : <div />}
     </div>
   );
   

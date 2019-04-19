@@ -145,6 +145,9 @@ const Comment = sequelize.define('comment', {
   }
 })
 
+
+//joint table for Tags_Purchases for adding tags to a user's purchased contacts
+
 //////////////////////
 /////RELATIONSHIPS////
 //////////////////////
@@ -158,11 +161,79 @@ Purchase.belongsTo(Contact);
 Contact.hasMany(Purchase);
 User.hasMany(Purchase);
 
+const Tag = sequelize.define('tag', {
+  text: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+})
 
+const tagPurchase = sequelize.define('tagPurchase');
 
+Purchase.belongsToMany(Tag, {as: 'Tags', through: { model: tagPurchase }, foreignKey: 'purchaseId'});
+Tag.belongsToMany(Purchase, {as: 'Purchases', through: { model: tagPurchase }, foreignKey: 'tagId'});
+Tag.hasMany(tagPurchase);
+Purchase.hasMany(tagPurchase);
+tagPurchase.belongsTo(Tag);
+tagPurchase.belongsTo(Purchase);
 ///////////////////////////////////////////
 /////////////HELPER FUNCTIONS//////////////
 //////////////////////////////////////////
+
+//query on render brings back all contacts for a user, 
+//in state, purchaseId needs to be a component in that model object
+//
+
+
+//Create D.B. helper function to add tag to user's purchased contact
+
+//questions I have:
+//to associate a tag with a client, I needed to create a joint table between the tag ID and the purchase ID
+//then, I need to return an array of objects containing
+
+const addTag = (tagText, userId, contactId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
+  var purchaseId;
+  return Purchase.findAll({
+    where: { userId: userId, contactId: contactId }
+  })
+  .then((purchaseRow) => {
+    purchaseId = purchaseRow[0].id;
+    return Tag.create({
+      text: tagText,
+    })
+  })
+  .then((text)=>{
+    return text.dataValues.id;
+  })
+  .then((tag)=>{
+    return tagPurchase.create({
+      tagId: tag,
+      purchaseId: purchaseId,
+  })
+  })
+  .then(()=>{
+    //grab all the tag ID's from the table that have the given purchaseId, then query the tag table for all the returne tag ID's
+    return tagPurchase.findAll({
+      where: {
+        purchaseId: purchaseId
+      },
+      include: [
+        {model: Tag},
+        {model: Purchase,
+        include: [Contact]
+      },
+      ]
+    })
+  })
+  .then((tagPurchaseArray)=>{ 
+    return tagPurchaseArray;
+  })
+  .catch((err)=>{
+    console.log(err, 'error line 220 index.js database')
+  });
+}
+
+
 
 
 const purchasedContacts = function (callback, id) {
@@ -195,23 +266,26 @@ const getPurchasedContacts = (userId) => {
       userId: userId
     },
     include: [
-      {model: Contact}
+      {model: Contact},
+      {model: tagPurchase,
+      include: [Tag]}
     ]
   }).then((result) => {
       return result.map(model => {
         model.contact.dataValues.status = model.status;
-        return model.contact;
+        model.contact.dataValues.tags = model.tagPurchases.map((tag)=>{
+          return tag.tag.text;
+        })
+        return model.contact
       })
   }).catch((err) => {
     return err;
   });
 }
-
-
 ////////////////////
 ///// EXPORTS //////
 ////////////////////
-
+module.exports.addTag = addTag;
 module.exports.sequelize = sequelize;
 module.exports.User = User;
 module.exports.Contact = Contact;

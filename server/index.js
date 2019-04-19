@@ -11,7 +11,7 @@ const authRoutes    = require('./routes/auth')
 const usersRoute   = require('./routes/users')
 const {loginRequired, ensureCorrectUser} = require('./middleware/auth.js')
 
-
+const { addTag } = require('../database/index'); //importing addTag from db
 
 const errorHandler  = require('../handlers/error')
 const Sequelize = require('sequelize');
@@ -21,19 +21,33 @@ const Op = Sequelize.Op;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser());
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// app.get('*', function (request, response) {
-//   response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'))
-// })
+
+//to add tags to database for later retrieval
+
+app.post('/tags', (req, res)=>{ 
+  const {userId, tagText, contactId } = req.query
+  return addTag(tagText, userId, contactId)  //only issue is gotta find a way to get a piece of info that links client to purchaseID so we can hit the db up for it
+    .then((response)=>{  
+      res.json(response);
+    })
+    .catch((err)=>{
+      console.log(err, 'err line 18 users.js')
+    });
+})
+
+//gets all tags for all users, for rendering on mount
+app.get('/tags', (req, res)=>{
+  
+})
+
 
 //////////////////////////////////////////////////////////
 ///////////// ROUTES ////////////////////////////
 //////////////////////////////////////////////////////
 
-// app.use(session({secret: 'cat', resave: false, saveUninitialized: false}));
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 
 app.use('/api/auth', authRoutes);
