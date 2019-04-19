@@ -144,6 +144,12 @@ class FormView extends React.Component {
     if (this.props.selectedView === 'upload'){
       return (
         <div>
+          <Button onClick={() => this.fileInput.click()} color="secondary" >
+            Choose CSV For Upload
+          </Button>
+          <Button onClick={this.handleCSVUpload} color="secondary" >
+            Upload File
+          </Button>
           <form onSubmit={()=>{this.handleUpload(event)}}>
             <Input placeholder="First & Last Name" fullWidth={true} required={true} onChange={(event)=>{this.uploadName(event.target.value)}} value={this.state.uploadName}></Input>
             <Input placeholder="Company" fullWidth={true} required={true} onChange={(event)=>{this.uploadCompany(event.target.value)}} value={this.state.uploadCompany}></Input>
@@ -162,12 +168,6 @@ class FormView extends React.Component {
                 onChange={this.handleFileSelect}
                 ref={fileInput => this.fileInput = fileInput}
               />
-              <Button onClick={() => this.fileInput.click()} >
-                Choose CSV For Upload
-              </Button>
-              <Button onClick={this.handleCSVUpload}>
-                Upload File
-              </Button>
             </div>
           </form>
         </div>
