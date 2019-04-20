@@ -28,9 +28,23 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
     <Card>
       <Grid container spacing={8}>
         <Grid item xs={4}>
-          {
-            // Filter by status here
-          }
+          <form className={classes.root} autoComplete="off">
+            <FormControl className={classes.formControl}>
+              <InputLabel>Filter by Status</InputLabel>
+              <Select onChange={(e) => createFilteredList('status', e.target.value)}>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {
+                  ['Open', 'Attempting Contact', 'Converted / Qualified', 'Disqualified', 'Not Engaged']
+                  .map(status => (
+                      <MenuItem value={status} key={status}>
+                        {status}
+                      </MenuItem>))
+                }
+              </Select>
+            </FormControl>
+          </form>
         </Grid>
         <Grid item xs={4}>
           {
@@ -41,21 +55,14 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl}>
               <InputLabel>Filter by Tag</InputLabel>
-              <Select
-                // value={this.state.age}
-                onChange={(e) => console.log(e.target.value)}
-                inputProps={{
-                  name: 'age',
-                  id: 'age-simple',
-                }}
-              >
+              <Select onChange={(e) => createFilteredList('tag', e.target.value)}>
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
                 {
                   Array.isArray(tagList) ?
                   tagList.map(tag => (
-                    <MenuItem value={tag}>
+                    <MenuItem value={tag} key={tag}>
                       {tag}
                     </MenuItem> )):
                     <div />
