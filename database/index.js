@@ -132,7 +132,7 @@ const Comment = sequelize.define('comment', {
     allowNull: false,
     primaryKey: true
   },
-  us: Sequelize.INTEGER,
+  userId: Sequelize.INTEGER,
   contactId: Sequelize.INTEGER,
   comment: Sequelize.STRING,
   createdAt: {
