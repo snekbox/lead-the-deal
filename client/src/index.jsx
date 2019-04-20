@@ -61,20 +61,12 @@ showModal(){
   console.log('modal');
 }
 
-/**
- * @function addTag 
- * adds tag to tags table, adds tag/purchase id to joint table, 
- * returns the tags to add to purchased contact on state
- * 
- * @param {*} tagName tag name to add
- * @param {*} purchaseId get the purchase id from wherever we need to, to add tag to correct purchased lead
- */
-
-addTag(tagName, purchaseId){
+addTag(x, x, x){
 axios.post('/tags', {
   query: {
-    tagName: tagName,
-    purchaseId: purchaseId,
+    userId: x,
+    tagText: x,
+    contactId: x,
   }
 })
 .then((response)=>{
