@@ -16,7 +16,7 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -27,7 +27,7 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
   <div>
     <Card>
       <Grid container spacing={8}>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl}>
               <InputLabel>Filter by Status</InputLabel>
@@ -36,7 +36,7 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
                   <em>None</em>
                 </MenuItem>
                 {
-                  ['Open', 'Attempting Contact', 'Converted / Qualified', 'Disqualified', 'Not Engaged']
+                  ['Open', 'Attempt Contact', 'Qualified', 'Disqualified', 'Not Engaged']
                   .map(status => (
                       <MenuItem value={status} key={status}>
                         {status}
@@ -46,12 +46,7 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
             </FormControl>
           </form>
         </Grid>
-        <Grid item xs={4}>
-          {
-            // Empty space for now. Use it if you need it.
-          }
-        </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl}>
               <InputLabel>Filter by Tag</InputLabel>

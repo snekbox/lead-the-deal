@@ -284,7 +284,9 @@ createTagList() {
 createFilteredList(filterType, filterBy) {
   const { purchased } = this.state;
   let filteredList
-  if (filterType === 'tag') {
+  if (!filterBy) {
+    filteredList = purchased;
+  } else if (filterType === 'tag') {
     filteredList = purchased.filter(contact => {
       return contact.tags.includes(filterBy);
     })
