@@ -29,10 +29,8 @@ function DashboardHeader(props) {
   const { classes } = props;
   const {isLoggedIn} = props;
   const {logOutUser} = props;
-
-    
-    return (
-      <div className={classes.root}>
+  return (
+    <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
             <img src="./company_logo.png" height="60x" alt="logo" />
@@ -40,22 +38,22 @@ function DashboardHeader(props) {
             
           </Typography>
           
-         { isLoggedIn ?
-         <div>
-           <Button onClick={logOutUser}>Logout</Button>
-         </div>
-         :<div>
-         <Button color="inherit">
+        { isLoggedIn ?
+        <div>
+          <Button onClick={logOutUser}>Logout</Button>
+        </div>
+        :<div>
+        <Button color="inherit">
             <Link to="/register">
-             <span id="user-info"> <strong>Register</strong> </span> 
+            <span id="user-info"> <strong>Register</strong> </span> 
           </Link>
           </Button>
           <Button color="inherit">
           <Link to="/login">
-             <span id="user-info"> <strong>Login</strong> </span> 
+            <span id="user-info"> <strong>Login</strong> </span> 
           </Link>          
           </Button> 
-         </div> }
+        </div> }
         </Toolbar>
       </AppBar>
     </div>

@@ -61,24 +61,24 @@ showModal(){
   console.log('modal');
 }
 
-addTag(x, x, x){
-axios.post('/tags', {
-  query: {
-    userId: x,
-    tagText: x,
-    contactId: x,
-  }
-})
-.then((response)=>{
-  // this.setState({
-  // })
-//set whatever stately variable needs to be set to reflect that tag added to contact
-console.log(response);
-})
-.catch((err)=>{
-  console.log('server responded with error, line 85 index.jsx');
-});
-}
+// addTag(x, x, x){
+// axios.post('/tags', {
+//   query: {
+//     userId: x,
+//     tagText: x,
+//     contactId: x,
+//   }
+// })
+// .then((response)=>{
+//   // this.setState({
+//   // })
+// //set whatever stately variable needs to be set to reflect that tag added to contact
+// console.log(response);
+// })
+// .catch((err)=>{
+//   console.log('server responded with error, line 85 index.jsx');
+// });
+// }
 
 
 getUserPoints(){
