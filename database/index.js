@@ -273,6 +273,7 @@ const getPurchasedContacts = (userId) => {
   }).then((result) => {
       return result.map(model => {
         model.contact.dataValues.status = model.status;
+        model.contact.dataValues.purchaseId = model.id;
         model.contact.dataValues.tags = model.tagPurchases.map((tag)=>{
           return tag.tag.text;
         })
@@ -280,6 +281,17 @@ const getPurchasedContacts = (userId) => {
       })
   }).catch((err) => {
     return err;
+  });
+}
+
+const updatePurchasedContactStatus = ( purchaseId, status) => {
+  return Purchase.update(
+    { status: status},
+    {where: {id: purchaseId} }
+  ).then((result) => {
+    return result
+  }).catch((err) => {
+    return err
   });
 }
 ////////////////////
@@ -293,4 +305,5 @@ module.exports.Purchase = Purchase;
 module.exports.purchasedContacts = purchasedContacts;
 module.exports.Comment = Comment;
 module.exports.getPurchasedContacts = getPurchasedContacts;
+module.exports.updatePurchasedContactStatus = updatePurchasedContactStatus;
 
