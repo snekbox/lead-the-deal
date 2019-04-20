@@ -6,7 +6,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
@@ -59,9 +59,17 @@ class PurchasedContactListEntry extends React.Component {
       <div className={classes.root}>
         <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>{contact.name}</Typography>
-            <Typography className={classes.secondaryHeading}>{contact.company} | {contact.industry}</Typography>
-            <Typography className={classes.status}>{contact.status}</Typography>
+            <Grid container spacing={8}>
+              <Grid item xs={4}>
+                <Typography className={classes.heading}>{contact.name}</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography className={classes.secondaryHeading}>{contact.company} | {contact.industry}</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography className={classes.status}>{contact.status}</Typography>
+              </Grid>
+            </Grid>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Grid container spacing={8}>
@@ -71,11 +79,17 @@ class PurchasedContactListEntry extends React.Component {
               <Grid item xs={3}>
                 {contact.company}
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 {contact.phone}
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 {contact.email}
+              </Grid>
+              <Grid item xs={10}>
+                {contact.tags.map(tag => <div>{tag}</div>)}
+              </Grid>
+              <Grid item xs={2}>
+                <Button>Add Tag</Button>
               </Grid>
             </Grid>
           </ExpansionPanelDetails>
