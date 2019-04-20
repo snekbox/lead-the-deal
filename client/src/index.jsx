@@ -167,8 +167,6 @@ logOutUser(){
         </div>
         : 
         <div className='intro-body' >
-       
-       
         <DashboardHeader isLoggedin={this.state.isLoggedin} logOutUser={this.logOutUser}/>
           <Route path='/register'
             render={(routeProps) => (<Register {...routeProps} registerUser={this.registerUser} />)}
@@ -178,9 +176,6 @@ logOutUser(){
             />
         </div>
         }
-
-        
-    
       </Router>
     )
   }
