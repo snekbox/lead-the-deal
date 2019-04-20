@@ -202,6 +202,16 @@ router.get('/:id/purchased_contacts', loginRequired, ensureCorrectUser, (req, re
   });
 })
 
+router.patch('/purchased_contact/:purchaseId', loginRequired, ensureCorrectUser, (req, res) => {
+  let purchaseId = req.params.purchaseId
+  db.updatePurchasedContactStatus(purchaseId, req.body.status)
+  .then((result) => {
+    res.send(result)  
+  }).catch((err) => {
+    
+  });
+})
+
 router.post('/search/:id', (req, res) => {
   const query = req.body;
   ////// SETTING LOGIC TO HANDLE UNDEFINED VALUES ///////////////////////////
