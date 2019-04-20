@@ -202,7 +202,7 @@ router.get('/:id/purchased_contacts', loginRequired, ensureCorrectUser, (req, re
   });
 })
 
-router.patch('/purchased_contact/:purchaseId', loginRequired, ensureCorrectUser, (req, res) => {
+router.patch('/purchased_contact/:purchaseId', (req, res) => {
   let purchaseId = req.params.purchaseId
   db.updatePurchasedContactStatus(purchaseId, req.body.status)
   .then((result) => {
