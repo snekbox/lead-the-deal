@@ -291,6 +291,20 @@ createFilteredList(tag) {
   })
 }
 
+removeTagFromContact(tagId, purchaseId) {
+  axios.patch('/tags', { 
+    tagId,
+    purchaseId, 
+  })
+  .then(()=>{
+    //get request to set state all over again to the new 
+    console.log('tag successfully removed from purchased client')
+  })
+  .catch((error)=>{
+    console.log('tag not removed/ possible error from server')
+  })
+}
+
 render(){
   if (this.state.renderContactList) {
     return (

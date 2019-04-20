@@ -11,7 +11,7 @@ const authRoutes    = require('./routes/auth')
 const usersRoute   = require('./routes/users')
 const {loginRequired, ensureCorrectUser} = require('./middleware/auth.js')
 
-const { addTag } = require('../database/index'); //importing addTag from db
+const { addTag, deleteTag } = require('../database/index'); //importing addTag from db
 
 const errorHandler  = require('../handlers/error')
 const Sequelize = require('sequelize');
@@ -39,9 +39,17 @@ app.post('/tags', (req, res)=>{
 })
 
 //gets all tags for all users, for rendering on mount
-app.get('/tags', (req, res)=>{
-  
+app.patch('/tags', (req, res)=>{
+  const {tagId, purchaseId} = req.body;
+  return deleteTag(tagId, purchaseId)
+  .then((destroyedObject)=>{
+  res.json(destroyedObject);
 })
+.catch((err)=>{
+  console.log(err, 'line 50 indexjs server err');
+})
+})
+
 
 
 //////////////////////////////////////////////////////////
