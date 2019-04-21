@@ -8,7 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import TextField from '@material-ui/core/TextField';
+import Popover from '@material-ui/core/Popover';
 
 const styles = theme => ({
   root: {
@@ -42,6 +43,7 @@ class PurchasedContactListEntry extends React.Component {
     super(props);
     this.state = {
       expanded: null,
+      anchorEl: null,
     }
   }
 
@@ -50,6 +52,20 @@ class PurchasedContactListEntry extends React.Component {
       expanded: expanded ? panel : false,
     });
   };
+
+  handleOpenPopover(popover){
+    this.setState({
+      anchorEl: popover.currentTarget,
+    })
+  }
+  handleClosePopover(){
+    this.setState({
+      anchorEl: null,
+    })
+  }
+
+/** function that handles the change in text input */
+/** function that sends the tag text to the db */
 
   render() {
     const { contact, classes } = this.props;
@@ -89,7 +105,22 @@ class PurchasedContactListEntry extends React.Component {
                 {contact.tags.map(tag => <div>{tag}</div>)}
               </Grid>
               <Grid item xs={2}>
-                <Button>Add Tag</Button>
+              <Button onClick={(popover)=>{ this.handleOpenPopover(popover)} }>Add Tag</Button>
+              <Popover>
+                <Grid container spacing={1}>
+                <Grid item xs={4}> 
+                <form className={classes.container} noValidate autoComplete="off">
+                  <TextField
+                    label="Add a tag here"
+                    className={ classes.textField }
+                    //onChange={/** function that handles the change in text input */ }
+                    margin="normal"
+                  />
+                  </form>
+                  <Button ></Button> 
+                  </Grid>
+                </Grid>
+              </Popover>
               </Grid>
             </Grid>
           </ExpansionPanelDetails>
