@@ -10,6 +10,16 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from '@material-ui/core/TextField';
 import Popover from '@material-ui/core/Popover';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import FilledInput from '@material-ui/core/FilledInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Axios from 'axios';
+
 
 const styles = theme => ({
   root: {
@@ -66,6 +76,13 @@ class PurchasedContactListEntry extends React.Component {
 
 /** function that handles the change in text input */
 /** function that sends the tag text to the db */
+  handleForm = event => {
+    this.props.contact.status = event.target.value;
+    this.forceUpdate();
+    Axios.patch(`api/users/purchased_contact/${this.props.contact.purchaseId}`, {
+      status: event.target.value
+    })
+  };
 
   render() {
     const { contact, classes } = this.props;
@@ -89,10 +106,10 @@ class PurchasedContactListEntry extends React.Component {
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Grid container spacing={8}>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 {contact.position}
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 {contact.company}
               </Grid>
               <Grid item xs={2}>
@@ -100,6 +117,25 @@ class PurchasedContactListEntry extends React.Component {
               </Grid>
               <Grid item xs={4}>
                 {contact.email}
+              </Grid>
+              <Grid>
+          <Select
+            value={this.props.contact.status}
+            onChange={this.handleForm}
+            inputProps={{
+              name: 'age',
+              id: 'age-simple',
+            }}
+          >
+            <MenuItem value="">
+              <em>{contact.status}</em>
+            </MenuItem>
+            <MenuItem value={'Open'}>Open</MenuItem>
+            <MenuItem value={'Attempt Contact'}>Attempt Contact</MenuItem>
+            <MenuItem value={'Qualified'}>Qualified</MenuItem>
+            <MenuItem value={'Disqualified'}>Disqualified</MenuItem>
+            <MenuItem value={'Not Engaged'}>Not Engaged</MenuItem>
+          </Select>
               </Grid>
               <Grid item xs={10}>
                 {contact.tags.map(tag => <div>{tag}</div>)}
