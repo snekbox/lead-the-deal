@@ -125,14 +125,16 @@ class PurchasedContactListEntry extends React.Component {
           </Select>
               </Grid>
               <Grid item xs={10}>
-                {contact.tags.map(tag => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    onDelete={() => console.log('Delete me')}
-                    className={classes.chip}
-                  />
-                ))}
+                {
+                  contact.tags.map(tag => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      onDelete={() => console.log('Delete me')}
+                      className={classes.chip}
+                    />
+                  ))
+                }
               </Grid>
               <Grid item xs={2}>
                 <Button>Add Tag</Button>
