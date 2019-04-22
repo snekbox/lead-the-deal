@@ -55,7 +55,10 @@ class PurchasedContactListEntry extends React.Component {
       expanded: null,
       anchorEl: null,
       popover_open: false,
+      tagText: '',
     }
+    this.handleChangeInTagText.bind(this);
+    this.handleTagSubmit.bind(this);
   }
 
   handleChange = panel => (event, expanded) => {
@@ -75,10 +78,39 @@ class PurchasedContactListEntry extends React.Component {
     this.setState({
       popover_open: false,
     })
+    this.handleTagSubmit(this.state.tagText);
+  }
+  
+  /** function that handles the change in text input */
+  handleChangeInTagText(e){
+    this.setState({
+      tagText: e.target.value,
+    })
   }
 
-/** function that handles the change in text input */
 /** function that sends the tag text to the db */
+
+handleTagSubmit(tag){
+  //userId, tagText, contactId
+
+  if(tag.length > 0){
+    Axios.post('/tags', {
+      userId: this.props.contact.userId - 1, ///// my props.contact.userId is incorrect??
+      tagText: tag,
+      contactId: this.props.contact.id,
+    })
+  .then((response)=>{
+    console.log(response);
+    this.props.createTagList();
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+  }
+  //console.log(tag, this.props.contact.id, this.props.contact.userId);
+}
+
+
   handleForm = event => {
     this.props.contact.status = event.target.value;
     this.forceUpdate();
@@ -152,12 +184,11 @@ class PurchasedContactListEntry extends React.Component {
                   <TextField
                     label="Add a tag here"
                     className={ classes.textField }
-                    //onChange={/** function that handles the change in text input */ }
+                    onChange={(e)=>{this.handleChangeInTagText(e)}}
                     margin="normal"
                   />
                   </form>
                   </Grid>
-                  
                 </Grid>
                 <Grid item xs={10}>
                   <Button onClick={this.handleClosePopover.bind(this)}>Add tag</Button>

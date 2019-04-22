@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 //to add tags to database for later retrieval
 
 app.post('/tags', (req, res)=>{ 
-  const {userId, tagText, contactId } = req.query
+  const {userId, tagText, contactId } = req.body;
   return addTag(tagText, userId, contactId)  //only issue is gotta find a way to get a piece of info that links client to purchaseID so we can hit the db up for it
     .then((response)=>{  
       res.json(response);

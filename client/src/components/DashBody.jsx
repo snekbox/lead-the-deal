@@ -323,7 +323,7 @@ render(){
               <ContactList uploaded={this.state.uploaded} purchased={this.state.purchased} 
                 selectedView={this.state.selectedView} selectContact={this.selectContact} 
                 searchContact={this.searchContact} uploadContact={this.uploadContact} 
-                downloadCSV={this.downloadCSV} userId={this.props.userId} getUserPoints={this.props.getUserPoints} />
+                downloadCSV={this.downloadCSV} userId={this.props.userId} getUserPoints={this.props.getUserPoints}/>
               <SearchView searchedContacts={this.state.searchedContacts} selectedView={this.state.selectedView} selectContact={this.selectContact}/>
             </div>
           </Grid>
@@ -348,7 +348,7 @@ render(){
             </div>
           </Grid>
           <Grid item xs={9}>
-          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} tagList={this.state.tagList} />
+          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} tagList={this.state.tagList} />
             <div>
             </div>
             <LeadInfo currentLead={this.state.currentLead} contactView={this.state.contactView} contactPurchase={this.contactPurchase} />

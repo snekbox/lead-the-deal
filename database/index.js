@@ -193,11 +193,16 @@ tagPurchase.belongsTo(Purchase);
 
 const addTag = (tagText, userId, contactId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
   var purchaseId;
+  console.log(tagText, userId, contactId, '196 index.js db');
   return Purchase.findAll({
     where: { userId: userId, contactId: contactId }
   })
   .then((purchaseRow) => {
-    purchaseId = purchaseRow[0].id;
+    if(Array.isArray(purchaseRow)){
+      purchaseId = purchaseRow[0].id;
+    }else{
+      purchaseId = purchaseRow.id;
+    }
     return Tag.create({
       text: tagText,
     })
