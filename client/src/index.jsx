@@ -39,7 +39,6 @@ class App extends React.Component {
     this.getUserPoints = this.getUserPoints.bind(this);
     this.Auth = new AuthService();
     this.showModal = this.showModal.bind(this);
-    this.addTag = this.addTag.bind(this);
   }
 
 
@@ -59,33 +58,6 @@ componentWillMount() {
 
 showModal(){
   console.log('modal');
-}
-
-/**
- * @function addTag 
- * adds tag to tags table, adds tag/purchase id to joint table, 
- * returns the tags to add to purchased contact on state
- * 
- * @param {*} tagName tag name to add
- * @param {*} purchaseId get the purchase id from wherever we need to, to add tag to correct purchased lead
- */
-
-addTag(tagName, purchaseId){
-axios.post('/tags', {
-  query: {
-    tagName: tagName,
-    purchaseId: purchaseId,
-  }
-})
-.then((response)=>{
-  // this.setState({
-  // })
-//set whatever stately variable needs to be set to reflect that tag added to contact
-console.log(response);
-})
-.catch((err)=>{
-  console.log('server responded with error, line 85 index.jsx');
-});
 }
 
 

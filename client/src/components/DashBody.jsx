@@ -37,6 +37,7 @@ class DashBody extends React.Component {
       filteredList: [],
       tagList: [],
       selectedTag: null,
+      userId: this.props.userId,
     };
     const { classes } = props;
     DashBody.propTypes = {
@@ -56,6 +57,7 @@ class DashBody extends React.Component {
     this.downloadCSV = this.downloadCSV.bind(this);
     this.createTagList = this.createTagList.bind(this);
     this.createFilteredList = this.createFilteredList.bind(this);
+    this.getPurchasedContacts = this.getPurchasedContacts.bind(this);
   }
 
 componentWillMount(){
@@ -64,7 +66,6 @@ componentWillMount(){
   this.props.getUserPoints()
   this.props.auth.fetch(`/api/users/${this.props.userId}/purchased_contacts`)
     .then((purchasedContacts) => {
-      console.log(purchasedContacts)
       this.setState({ purchased: purchasedContacts, filteredList: purchasedContacts })
     })
     .then( () => {
@@ -72,6 +73,15 @@ componentWillMount(){
     })
 }
 
+getPurchasedContacts(){
+  this.props.auth.fetch(`/api/users/${this.props.userId}/purchased_contacts`)
+  .then((purchasedContacts) => {
+    this.setState({ purchased: purchasedContacts, filteredList: purchasedContacts })
+  })
+  .then( () => {
+    this.createTagList();
+  })
+}
 
 componentWillUnmount(){
   document.body.style.backgroundImage = "url('./leaddeal.png')"
@@ -302,6 +312,20 @@ createFilteredList(filterType, filterBy) {
   })
 }
 
+removeTagFromContact(tagId, purchaseId) {
+  axios.patch('/tags', { 
+    tagId,
+    purchaseId, 
+  })
+  .then(()=>{
+    //get request to set state all over again to the new 
+    console.log('tag successfully removed from purchased client')
+  })
+  .catch((error)=>{
+    console.log('tag not removed/ possible error from server')
+  })
+}
+
 render(){
   if (this.state.renderContactList) {
     return (
@@ -320,7 +344,7 @@ render(){
               <ContactList uploaded={this.state.uploaded} purchased={this.state.purchased} 
                 selectedView={this.state.selectedView} selectContact={this.selectContact} 
                 searchContact={this.searchContact} uploadContact={this.uploadContact} 
-                downloadCSV={this.downloadCSV} userId={this.props.userId} getUserPoints={this.props.getUserPoints} />
+                downloadCSV={this.downloadCSV} userId={this.props.userId} getUserPoints={this.props.getUserPoints}/>
               <SearchView searchedContacts={this.state.searchedContacts} selectedView={this.state.selectedView} selectContact={this.selectContact}/>
             </div>
           </Grid>
@@ -345,7 +369,7 @@ render(){
             </div>
           </Grid>
           <Grid item xs={9}>
-          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} tagList={this.state.tagList} />
+          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} userId={this.state.userId} getPurchasedContacts={this.getPurchasedContacts} tagList={this.state.tagList} />
             <div>
             </div>
             <LeadInfo currentLead={this.state.currentLead} contactView={this.state.contactView} contactPurchase={this.contactPurchase} />

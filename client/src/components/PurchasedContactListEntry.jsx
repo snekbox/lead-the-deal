@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import TextField from '@material-ui/core/TextField';
+import Popover from '@material-ui/core/Popover';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -54,7 +56,12 @@ class PurchasedContactListEntry extends React.Component {
     super(props);
     this.state = {
       expanded: null,
+      anchorEl: null,
+      popover_open: false,
+      tagText: '',
     }
+    this.handleChangeInTagText.bind(this);
+    this.handleTagSubmit.bind(this);
   }
 
   handleChange = panel => (event, expanded) => {
@@ -62,6 +69,49 @@ class PurchasedContactListEntry extends React.Component {
       expanded: expanded ? panel : false,
     });
   };
+
+  handleOpenPopover(popover){
+    popover.preventDefault();
+    this.setState({
+      anchorEl: popover.currentTarget,
+      popover_open: true,
+    })
+  }
+  handleClosePopover(){
+    this.setState({
+      popover_open: false,
+    })
+    this.handleTagSubmit(this.state.tagText);
+  }
+  
+  /** function that handles the change in text input */
+  handleChangeInTagText(e){
+    this.setState({
+      tagText: e.target.value,
+    })
+  }
+
+/** function that sends the tag text to the db */
+
+handleTagSubmit(tag){
+  //userId, tagText, contactId
+  if(tag.length > 0){
+    Axios.post('/tags', {
+      userId: this.props.userId, 
+      tagText: tag,
+      contactId: this.props.contact.id,
+    })
+  .then((response)=>{
+    //need to re-render entire list of purchased contacts
+    this.props.getPurchasedContacts();
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+  }
+  //console.log(tag, this.props.contact.id, this.props.contact.userId);
+}
+
 
   handleForm = event => {
     this.props.contact.status = event.target.value;
@@ -137,7 +187,24 @@ class PurchasedContactListEntry extends React.Component {
                 }
               </Grid>
               <Grid item xs={2}>
-                <Button>Add Tag</Button>
+              <Button onClick={(popover)=>{ this.handleOpenPopover(popover)} }>Add Tag</Button>
+              <Popover open={this.state.popover_open} anchorEl={this.state.anchorEl}>
+                <Grid container spacing={8}>
+                <Grid item xs={10}> 
+                <form className={classes.container} noValidate autoComplete="off">
+                  <TextField
+                    label="Add a tag here"
+                    className={ classes.textField }
+                    onChange={(e)=>{this.handleChangeInTagText(e)}}
+                    margin="normal"
+                  />
+                  </form>
+                  </Grid>
+                </Grid>
+                <Grid item xs={10}>
+                  <Button onClick={this.handleClosePopover.bind(this)}>Add tag</Button>
+                </Grid>
+              </Popover>
               </Grid>
             </Grid>
           </ExpansionPanelDetails>

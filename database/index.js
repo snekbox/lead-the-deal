@@ -193,11 +193,16 @@ tagPurchase.belongsTo(Purchase);
 
 const addTag = (tagText, userId, contactId) => { //purchased ID needs to be entered automatically on the addition of a tag, instead of manually entered using postman lol
   var purchaseId;
+  console.log(tagText, userId, contactId, '196 index.js db');
   return Purchase.findAll({
     where: { userId: userId, contactId: contactId }
   })
   .then((purchaseRow) => {
-    purchaseId = purchaseRow[0].id;
+    if(Array.isArray(purchaseRow)){
+      purchaseId = purchaseRow[0].id;
+    }else{
+      purchaseId = purchaseRow.id;
+    }
     return Tag.create({
       text: tagText,
     })
@@ -233,8 +238,20 @@ const addTag = (tagText, userId, contactId) => { //purchased ID needs to be ente
   });
 }
 
-
-
+const deleteTag = (tagId, purchaseId) =>{
+  return tagPurchase.findOne({
+    where: {
+      tagId,
+      purchaseId,
+    }
+  })
+  .then((tagPurchaseRow)=>{
+    return tagPurchaseRow.destroy()
+  })
+  .catch((err)=>{
+    console.log('this aint it chieferino')
+  })
+}
 
 const purchasedContacts = function (callback, id) {
   Purchase.findAll({
@@ -297,6 +314,8 @@ const updatePurchasedContactStatus = ( purchaseId, status) => {
 ////////////////////
 ///// EXPORTS //////
 ////////////////////
+
+module.exports.deleteTag = deleteTag;
 module.exports.addTag = addTag;
 module.exports.sequelize = sequelize;
 module.exports.User = User;
