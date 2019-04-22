@@ -1,6 +1,6 @@
 import React from 'react';
 import Toolbar from '@material-ui/core/Toolbar';
-import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -51,16 +51,31 @@ const Practice = ({currentLead, contactView, contactPurchase, handleComment, com
             </div> 
           </Typography>
           <Divider/>
-              <div className="contact-info">
-              <div><strong>Company:</strong> {currentLead.company}</div>
-              <div><strong>Position:</strong> {currentLead.position}</div>
-              <div><strong>Industry: </strong>{currentLead.industry}</div>
-              <div><strong>Phone:</strong> {currentLead.phone}</div>
-              <div><strong>e-mail: </strong>{currentLead.email}</div>
-              <div><strong>Address: </strong>{currentLead.Address}</div>
-              <div><strong>Verified:</strong> {verified}</div>
-
-              </div>
+            <Grid container spacing={8}>
+              <Grid item xs={9}>
+                <div className="contact-info">
+                  <div><strong>Company:</strong> {currentLead.company}</div>
+                  <div><strong>Position:</strong> {currentLead.position}</div>
+                  <div><strong>Industry: </strong>{currentLead.industry}</div>
+                  <div><strong>Phone:</strong> {currentLead.phone}</div>
+                  <div><strong>e-mail: </strong>{currentLead.email}</div>
+                  <div><strong>Address: </strong>{currentLead.Address}</div>
+                  <div><strong>Verified:</strong> {verified}</div>
+                </div>
+              </Grid>
+              <Grid item x3={3}>
+                {
+                  currentLead.tags.map(tag => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      onDelete={() => console.log('Delete me')}
+                      // className={classes.chip}
+                    />
+                  ))
+                }
+              </Grid>
+            </Grid>
             </CardContent>
           </CardActionArea>
         </Card>

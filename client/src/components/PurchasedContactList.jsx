@@ -16,7 +16,7 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -27,35 +27,37 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
   <div>
     <Card>
       <Grid container spacing={8}>
-        <Grid item xs={4}>
-          {
-            // Filter by status here
-          }
+        <Grid item xs={6}>
+          <form className={classes.root} autoComplete="off">
+            <FormControl className={classes.formControl}>
+              <InputLabel>Filter by Status</InputLabel>
+              <Select onChange={(e) => createFilteredList('status', e.target.value)}>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {
+                  ['Open', 'Attempt Contact', 'Qualified', 'Disqualified', 'Not Engaged']
+                  .map(status => (
+                      <MenuItem value={status} key={status}>
+                        {status}
+                      </MenuItem>))
+                }
+              </Select>
+            </FormControl>
+          </form>
         </Grid>
-        <Grid item xs={4}>
-          {
-            // Empty space for now. Use it if you need it.
-          }
-        </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl}>
               <InputLabel>Filter by Tag</InputLabel>
-              <Select
-                // value={this.state.age}
-                onChange={(e) => console.log(e.target.value)}
-                inputProps={{
-                  name: 'age',
-                  id: 'age-simple',
-                }}
-              >
+              <Select onChange={(e) => createFilteredList('tag', e.target.value)}>
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
                 {
                   Array.isArray(tagList) ?
                   tagList.map(tag => (
-                    <MenuItem value={tag}>
+                    <MenuItem value={tag} key={tag}>
                       {tag}
                     </MenuItem> )):
                     <div />

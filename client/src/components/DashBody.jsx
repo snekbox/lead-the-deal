@@ -281,11 +281,20 @@ createTagList() {
   })
 }
 
-createFilteredList(tag) {
+createFilteredList(filterType, filterBy) {
   const { purchased } = this.state;
-  const filteredList = purchased.filter(contact => {
-    return contact.tags.includes(tag);
-  })
+  let filteredList
+  if (!filterBy) {
+    filteredList = purchased;
+  } else if (filterType === 'tag') {
+    filteredList = purchased.filter(contact => {
+      return contact.tags.includes(filterBy);
+    })
+  } else {
+    filteredList = purchased.filter(contact => {
+      return contact.status === filterBy;
+    })
+  }
   this.setState({
     filteredList,
   })
