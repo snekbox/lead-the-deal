@@ -23,7 +23,7 @@ const styles = theme => ({
   },
 });
 
-const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagList, classes, createTagList, userId}) => (
+const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagList, classes, createTagList, userId, getPurchasedContacts}) => (
   <div>
     <Card>
       <Grid container spacing={8}>
@@ -56,10 +56,11 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
                 </MenuItem>
                 {
                   Array.isArray(tagList) ?
-                  tagList.map(tag => (
+                  tagList.map(tag => { 
+                    return (
                     <MenuItem value={tag} key={tag}>
                       {tag}
-                    </MenuItem> )):
+                    </MenuItem> )}):
                     <div />
                 }
               </Select>
@@ -68,7 +69,7 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
         </Grid>
       </Grid>
     </Card>
-    { Array.isArray(filteredList) ? filteredList.map(contact => <PurchasedContactListEntry userId={userId} contact={contact} key={contact.id} createTagList={createTagList}/>) : <div />}
+    { Array.isArray(filteredList) ? filteredList.map(contact => <PurchasedContactListEntry getPurchasedContacts={getPurchasedContacts} userId={userId} contact={contact} key={contact.id} createTagList={createTagList}/>) : <div />}
   </div>
   );
   

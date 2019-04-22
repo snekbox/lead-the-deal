@@ -97,13 +97,13 @@ handleTagSubmit(tag){
   //userId, tagText, contactId
   if(tag.length > 0){
     Axios.post('/tags', {
-      userId: this.props.userId, ///// my props.contact.userId is incorrect??
+      userId: this.props.userId, 
       tagText: tag,
       contactId: this.props.contact.id,
     })
   .then((response)=>{
-    console.log(response);
-    this.props.createTagList();
+    //need to re-render entire list of purchased contacts
+    this.props.getPurchasedContacts();
   })
   .catch((err)=>{
     console.log(err);

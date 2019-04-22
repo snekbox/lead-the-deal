@@ -57,6 +57,7 @@ class DashBody extends React.Component {
     this.downloadCSV = this.downloadCSV.bind(this);
     this.createTagList = this.createTagList.bind(this);
     this.createFilteredList = this.createFilteredList.bind(this);
+    this.getPurchasedContacts = this.getPurchasedContacts.bind(this);
   }
 
 componentWillMount(){
@@ -65,12 +66,22 @@ componentWillMount(){
   this.props.getUserPoints()
   this.props.auth.fetch(`/api/users/${this.props.userId}/purchased_contacts`)
     .then((purchasedContacts) => {
-      console.log(purchasedContacts)
       this.setState({ purchased: purchasedContacts, filteredList: purchasedContacts })
-  })
-  this.createTagList();
+    })
+    .then( () => {
+      this.createTagList();
+    })
 }
 
+getPurchasedContacts(){
+  this.props.auth.fetch(`/api/users/${this.props.userId}/purchased_contacts`)
+  .then((purchasedContacts) => {
+    this.setState({ purchased: purchasedContacts, filteredList: purchasedContacts })
+  })
+  .then( () => {
+    this.createTagList();
+  })
+}
 
 componentWillUnmount(){
   document.body.style.backgroundImage = "url('./leaddeal.png')"
@@ -276,7 +287,7 @@ createTagList() {
   purchased.forEach(contact => {
     tags.push(contact.tags);
   })
-  const result = new Set(tags.flat());
+  const result = Array.from(new Set(tags.flat()));
   this.setState({
     tagList: result,
   })
@@ -358,7 +369,7 @@ render(){
             </div>
           </Grid>
           <Grid item xs={9}>
-          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} userId={this.state.userId} tagList={this.state.tagList} />
+          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} userId={this.state.userId} getPurchasedContacts={this.getPurchasedContacts} tagList={this.state.tagList} />
             <div>
             </div>
             <LeadInfo currentLead={this.state.currentLead} contactView={this.state.contactView} contactPurchase={this.contactPurchase} />
