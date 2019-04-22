@@ -54,6 +54,7 @@ class PurchasedContactListEntry extends React.Component {
     this.state = {
       expanded: null,
       anchorEl: null,
+      popover_open: false,
     }
   }
 
@@ -64,13 +65,15 @@ class PurchasedContactListEntry extends React.Component {
   };
 
   handleOpenPopover(popover){
+    popover.preventDefault();
     this.setState({
       anchorEl: popover.currentTarget,
+      popover_open: true,
     })
   }
   handleClosePopover(){
     this.setState({
-      anchorEl: null,
+      popover_open: false,
     })
   }
 
@@ -142,9 +145,9 @@ class PurchasedContactListEntry extends React.Component {
               </Grid>
               <Grid item xs={2}>
               <Button onClick={(popover)=>{ this.handleOpenPopover(popover)} }>Add Tag</Button>
-              <Popover>
-                <Grid container spacing={1}>
-                <Grid item xs={4}> 
+              <Popover open={this.state.popover_open} anchorEl={this.state.anchorEl}>
+                <Grid container spacing={8}>
+                <Grid item xs={10}> 
                 <form className={classes.container} noValidate autoComplete="off">
                   <TextField
                     label="Add a tag here"
@@ -153,8 +156,11 @@ class PurchasedContactListEntry extends React.Component {
                     margin="normal"
                   />
                   </form>
-                  <Button ></Button> 
                   </Grid>
+                  
+                </Grid>
+                <Grid item xs={10}>
+                  <Button onClick={this.handleClosePopover.bind(this)}>Add tag</Button>
                 </Grid>
               </Popover>
               </Grid>
