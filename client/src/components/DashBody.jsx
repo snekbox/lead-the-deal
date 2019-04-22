@@ -66,8 +66,10 @@ componentWillMount(){
     .then((purchasedContacts) => {
       console.log(purchasedContacts)
       this.setState({ purchased: purchasedContacts, filteredList: purchasedContacts })
-  })
-  this.createTagList();
+    })
+    .then( () => {
+      this.createTagList();
+    })
 }
 
 
@@ -275,7 +277,7 @@ createTagList() {
   purchased.forEach(contact => {
     tags.push(contact.tags);
   })
-  const result = new Set(tags.flat());
+  const result = Array.from(new Set(tags.flat()));
   this.setState({
     tagList: result,
   })

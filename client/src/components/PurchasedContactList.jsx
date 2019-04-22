@@ -56,10 +56,11 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
                 </MenuItem>
                 {
                   Array.isArray(tagList) ?
-                  tagList.map(tag => (
+                  tagList.map(tag => { 
+                    return (
                     <MenuItem value={tag} key={tag}>
                       {tag}
-                    </MenuItem> )):
+                    </MenuItem> )}):
                     <div />
                 }
               </Select>
