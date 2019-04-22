@@ -17,7 +17,7 @@ import FilledInput from '@material-ui/core/FilledInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
+import Chip from '@material-ui/core/Chip';
 import Axios from 'axios';
 
 
@@ -45,6 +45,9 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     textAlign: 'center',
     color: theme.palette.text.secondary,
+  },
+  chip: {
+    margin: theme.spacing.unit / 2,
   },
 });
 
@@ -172,7 +175,16 @@ handleTagSubmit(tag){
           </Select>
               </Grid>
               <Grid item xs={10}>
-                {contact.tags.map(tag => <div>{tag}</div>)}
+                {
+                  contact.tags.map(tag => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      onDelete={() => console.log('Delete me')}
+                      className={classes.chip}
+                    />
+                  ))
+                }
               </Grid>
               <Grid item xs={2}>
               <Button onClick={(popover)=>{ this.handleOpenPopover(popover)} }>Add Tag</Button>
