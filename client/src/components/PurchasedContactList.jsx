@@ -23,7 +23,7 @@ const styles = theme => ({
   },
 });
 
-const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagList, classes, createTagList}) => (
+const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagList, classes, createTagList, userId}) => (
   <div>
     <Card>
       <Grid container spacing={8}>
@@ -68,7 +68,7 @@ const PurchasedContactList = ({ contacts, createFilteredList, filteredList, tagL
         </Grid>
       </Grid>
     </Card>
-    { Array.isArray(filteredList) ? filteredList.map(contact => <PurchasedContactListEntry contact={contact} key={contact.id} createTagList={createTagList}/>) : <div />}
+    { Array.isArray(filteredList) ? filteredList.map(contact => <PurchasedContactListEntry userId={userId} contact={contact} key={contact.id} createTagList={createTagList}/>) : <div />}
   </div>
   );
   

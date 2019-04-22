@@ -97,7 +97,7 @@ handleTagSubmit(tag){
   //userId, tagText, contactId
   if(tag.length > 0){
     Axios.post('/tags', {
-      userId: props.contact.userId, ///// my props.contact.userId is incorrect??
+      userId: this.props.userId, ///// my props.contact.userId is incorrect??
       tagText: tag,
       contactId: this.props.contact.id,
     })

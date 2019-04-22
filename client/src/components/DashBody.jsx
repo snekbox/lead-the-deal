@@ -37,6 +37,7 @@ class DashBody extends React.Component {
       filteredList: [],
       tagList: [],
       selectedTag: null,
+      userId: this.props.userId,
     };
     const { classes } = props;
     DashBody.propTypes = {
@@ -357,7 +358,7 @@ render(){
             </div>
           </Grid>
           <Grid item xs={9}>
-          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} tagList={this.state.tagList} />
+          <PurchasedContactList contacts={this.state.purchased} createFilteredList={this.createFilteredList} filteredList={this.state.filteredList} createTagList={this.createTagList} userId={this.state.userId} tagList={this.state.tagList} />
             <div>
             </div>
             <LeadInfo currentLead={this.state.currentLead} contactView={this.state.contactView} contactPurchase={this.contactPurchase} />
